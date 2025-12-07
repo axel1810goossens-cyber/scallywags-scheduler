@@ -1,0 +1,145 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.shift-card {
+    @include card-dark;
+    padding: $spacing-3;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+    border-left: 4px solid $primary-light;
+    position: relative;
+    overflow: hidden;
+
+    &.compact {
+        padding: $spacing-2;
+        gap: $spacing-1;
+
+        .shift-header {
+            margin-bottom: 0;
+        }
+
+        .name {
+            font-size: $font-size-sm;
+        }
+
+        .shift-time {
+            font-size: $font-size-xs;
+        }
+    }
+}
+
+.shift-header {
+    @include flex-between;
+}
+
+.employee-info {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+
+    .icon {
+        color: $primary-light;
+        font-size: $font-size-sm;
+    }
+
+    .name {
+        font-weight: $font-weight-semibold;
+        color: $white;
+    }
+}
+
+.shift-position {
+    margin: $spacing-1 0;
+
+    .position-badge {
+        display: inline-block;
+        font-size: $font-size-xs;
+        background: linear-gradient(135deg, $primary 0%, $secondary 100%);
+        padding: 2px 8px;
+        border-radius: $radius-sm;
+        color: $white;
+        font-weight: $font-weight-medium;
+    }
+}
+
+.shift-time {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    color: $gray-300;
+    font-size: $font-size-sm;
+    font-family: 'Courier New', monospace;
+
+    .icon {
+        font-size: $font-size-xs;
+    }
+}
+
+.shift-details {
+    margin-top: $spacing-1;
+
+    .position {
+        display: inline-block;
+        font-size: $font-size-xs;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 2px 6px;
+        border-radius: $radius-sm;
+        color: $gray-300;
+        margin-bottom: $spacing-1;
+    }
+
+    .notes {
+        font-size: $font-size-xs;
+        color: $gray-400;
+        font-style: italic;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.shift-actions {
+    display: flex;
+    gap: $spacing-2;
+    margin-top: $spacing-2;
+    padding-top: $spacing-2;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.action-btn {
+    @include flex-center;
+    flex: 1;
+    padding: $spacing-1;
+    border-radius: $radius-sm;
+    background: rgba(255, 255, 255, 0.05);
+    color: $gray-400;
+    transition: all $transition-base;
+
+    &:hover {
+        color: $white;
+    }
+
+    &.edit:hover {
+        background: $primary;
+    }
+
+    &.swap:hover {
+        background: $secondary;
+    }
+
+    &.delete:hover {
+        background: $error;
+    }
+}
+
+.shift-actions-mini {
+    button {
+        padding: 2px;
+        color: $gray-500;
+
+        &:hover {
+            color: $white;
+        }
+    }
+}

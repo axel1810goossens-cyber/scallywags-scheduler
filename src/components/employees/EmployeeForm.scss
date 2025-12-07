@@ -1,0 +1,108 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.employee-modal {
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    @include custom-scrollbar-dark;
+}
+
+.employee-form {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-6;
+}
+
+.form-section {
+    h3 {
+        font-size: $font-size-lg;
+        font-weight: $font-weight-semibold;
+        color: $primary-light;
+        margin-bottom: $spacing-4;
+        padding-bottom: $spacing-2;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+}
+
+.availability-grid {
+    display: grid;
+    gap: $spacing-4;
+
+    @include md {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.day-availability {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: $radius-md;
+    padding: $spacing-3;
+}
+
+.day-header {
+    @include flex-between;
+    margin-bottom: $spacing-2;
+
+    .day-label {
+        font-weight: $font-weight-medium;
+        color: $gray-200;
+    }
+}
+
+.add-slot-btn {
+    @include flex-center;
+    width: 24px;
+    height: 24px;
+    border-radius: $radius-full;
+    background: rgba($primary, 0.2);
+    color: $primary-light;
+    transition: all $transition-base;
+
+    &:hover {
+        background: $primary;
+        color: $white;
+    }
+}
+
+.time-slots {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+}
+
+.no-availability {
+    font-size: $font-size-sm;
+    color: $gray-500;
+    font-style: italic;
+}
+
+.time-slot-row {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+
+    input[type="time"] {
+        @include input-dark;
+        padding: $spacing-1 $spacing-2;
+        font-size: $font-size-sm;
+        width: auto;
+    }
+
+    span {
+        font-size: $font-size-sm;
+        color: $gray-400;
+    }
+}
+
+.remove-slot-btn {
+    @include flex-center;
+    width: 24px;
+    height: 24px;
+    color: $gray-500;
+    transition: all $transition-base;
+
+    &:hover {
+        color: $error;
+    }
+}

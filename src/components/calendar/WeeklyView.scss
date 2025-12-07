@@ -1,0 +1,100 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.weekly-view {
+    height: 100%;
+}
+
+.weekly-view-loading {
+    @include flex-center;
+    @include flex-column;
+    gap: $spacing-4;
+    padding: $spacing-16;
+
+    p {
+        color: $gray-300;
+        font-size: $font-size-lg;
+    }
+}
+
+.week-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-4;
+
+    @include md {
+        grid-template-columns: repeat(7, 1fr);
+    }
+}
+
+.day-column {
+    background: $bg-secondary;
+    border-radius: $radius-lg;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 400px;
+
+    &.today {
+        border-color: $primary-light;
+        box-shadow: 0 0 20px rgba($primary-light, 0.3);
+
+        .day-header {
+            background: linear-gradient(135deg, rgba($primary, 0.3), rgba($primary-light, 0.3));
+        }
+    }
+}
+
+.day-header {
+    background: rgba(255, 255, 255, 0.05);
+    padding: $spacing-4;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    .today-label {
+        display: inline-block;
+        margin-top: $spacing-1;
+        padding: 2px 8px;
+        background: $primary-light;
+        color: $white;
+        border-radius: $radius-full;
+        font-size: $font-size-xs;
+        font-weight: $font-weight-bold;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+}
+
+.day-name {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $gray-300;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: $spacing-1;
+}
+
+.day-date {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $white;
+}
+
+.day-shifts {
+    flex: 1;
+    padding: $spacing-3;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+    overflow-y: auto;
+    @include custom-scrollbar-dark;
+}
+
+.no-shifts {
+    @include flex-center;
+    flex: 1;
+    color: $gray-500;
+    font-size: $font-size-sm;
+    font-style: italic;
+}

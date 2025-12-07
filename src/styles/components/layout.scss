@@ -1,0 +1,26 @@
+@import '../variables';
+@import '../mixins';
+
+.dashboard-layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    height: calc(100vh - 73px); // Navbar height approx
+}
+
+.main-content {
+    flex: 1;
+    padding: $spacing-4;
+    overflow: hidden;
+    position: relative;
+
+    @include lg {
+        padding: $spacing-6;
+    }
+}

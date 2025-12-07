@@ -1,0 +1,133 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: $z-modal-backdrop;
+    @include flex-center;
+    padding: $spacing-4;
+}
+
+.modal-content {
+    @include glass-dark;
+    width: 100%;
+    max-width: 500px;
+    border-radius: $radius-xl;
+    padding: $spacing-6;
+    @include slide-up;
+    z-index: $z-modal;
+}
+
+.modal-header {
+    @include flex-between;
+    margin-bottom: $spacing-6;
+
+    h2 {
+        font-size: $font-size-xl;
+        font-weight: $font-weight-bold;
+        color: $white;
+    }
+}
+
+.close-button {
+    @include flex-center;
+    width: 32px;
+    height: 32px;
+    border-radius: $radius-full;
+    color: $gray-400;
+    transition: all $transition-base;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: $white;
+    }
+}
+
+.form-error {
+    background: rgba($error, 0.1);
+    border: 1px solid rgba($error, 0.3);
+    color: lighten($error, 10%);
+    padding: $spacing-3;
+    border-radius: $radius-md;
+    margin-bottom: $spacing-4;
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    font-size: $font-size-sm;
+}
+
+.shift-form {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-4;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+
+    label {
+        font-size: $font-size-sm;
+        font-weight: $font-weight-medium;
+        color: $gray-300;
+    }
+
+    input,
+    select,
+    textarea {
+        @include input-dark;
+    }
+
+    select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 16px;
+        padding-right: $spacing-10;
+    }
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-4;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: $spacing-3;
+    margin-top: $spacing-4;
+}
+
+.cancel-button {
+    padding: $spacing-3 $spacing-5;
+    border-radius: $radius-md;
+    color: $gray-300;
+    font-weight: $font-weight-medium;
+    transition: all $transition-base;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: $white;
+    }
+}
+
+.save-button {
+    @include button-primary;
+    padding: $spacing-3 $spacing-6;
+}
+
+.spinner-sm {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: $white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}

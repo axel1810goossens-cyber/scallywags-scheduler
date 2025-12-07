@@ -1,0 +1,118 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.calendar-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: $spacing-6;
+}
+
+.calendar-header {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-4;
+
+    @include lg {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+.calendar-controls {
+    display: flex;
+    align-items: center;
+    gap: $spacing-4;
+}
+
+.control-button {
+    @include flex-center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: $radius-md;
+    color: $white;
+    font-size: $font-size-xl;
+    transition: all $transition-base;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: $primary-light;
+        transform: scale(1.05);
+    }
+}
+
+.date-display {
+    @include flex-center;
+    gap: $spacing-3;
+    min-width: 280px;
+
+    h2 {
+        font-size: $font-size-lg;
+        font-weight: $font-weight-semibold;
+        color: $white;
+
+        @include md {
+            font-size: $font-size-xl;
+        }
+    }
+}
+
+.today-button {
+    padding: $spacing-2 $spacing-4;
+    background: rgba($primary-light, 0.1);
+    border: 1px solid rgba($primary-light, 0.3);
+    border-radius: $radius-md;
+    color: $primary-light;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    transition: all $transition-base;
+    cursor: pointer;
+
+    &:hover {
+        background: rgba($primary-light, 0.2);
+        border-color: $primary-light;
+        color: $white;
+    }
+}
+
+.view-switcher {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: $spacing-2;
+    background: rgba(255, 255, 255, 0.05);
+    padding: $spacing-2;
+    border-radius: $radius-lg;
+}
+
+.view-button {
+    padding: $spacing-2 $spacing-4;
+    background: transparent;
+    border: none;
+    border-radius: $radius-md;
+    color: $gray-300;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    transition: all $transition-base;
+    cursor: pointer;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: $white;
+    }
+
+    &.active {
+        background: linear-gradient(135deg, $primary, $primary-light);
+        color: $white;
+        box-shadow: $shadow-md;
+    }
+}
+
+.calendar-content {
+    flex: 1;
+    overflow: auto;
+    @include custom-scrollbar-dark;
+}
