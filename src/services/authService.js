@@ -9,7 +9,7 @@ import { auth } from './firebase';
 export const authService = {
     // Login with email and password
     login: async (email, password) => {
-        // Mock admin login for testing
+        // Mock admin login for testing (works with or without Firebase)
         if (email === 'admin@test.com' && password === 'admin') {
             const mockUser = {
                 uid: 'admin-test-id',
@@ -22,6 +22,14 @@ export const authService = {
             return {
                 success: true,
                 user: mockUser
+            };
+        }
+
+        // If Firebase is not configured, return error
+        if (!auth) {
+            return { 
+                success: false, 
+                error: 'Firebase not configured. Use admin@test.com / admin to login.' 
             };
         }
 
@@ -38,6 +46,11 @@ export const authService = {
         // Clear mock user from localStorage
         localStorage.removeItem('mockUser');
 
+        // If Firebase is not configured, just return success
+        if (!auth) {
+            return { success: true };
+        }
+
         try {
             await signOut(auth);
             return { success: true };
@@ -48,6 +61,14 @@ export const authService = {
 
     // Reset password
     resetPassword: async (email) => {
+        // If Firebase is not configured, return error
+        if (!auth) {
+            return { 
+                success: false, 
+                error: 'Password reset requires Firebase configuration.' 
+            };
+        }
+
         try {
             await sendPasswordResetEmail(auth, email);
             return { success: true };
@@ -68,6 +89,14 @@ export const authService = {
             } catch (error) {
                 console.error('Error parsing stored mock user:', error);
             }
+        } else {
+            // No mock user, call callback with null to indicate not logged in
+            setTimeout(() => callback(null), 0);
+        }
+
+        // If Firebase is not configured, return empty unsubscribe function
+        if (!auth) {
+            return () => {};
         }
 
         return onAuthStateChanged(auth, callback);
@@ -84,6 +113,6 @@ export const authService = {
                 console.error('Error parsing stored mock user:', error);
             }
         }
-        return auth.currentUser;
+        return auth ? auth.currentUser : null;
     }
 };

@@ -1,5 +1,6 @@
-@import '../../styles/variables';
-@import '../../styles/mixins';
+@use 'sass:color';
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
 
 .login-page {
     min-height: 100vh;
@@ -108,7 +109,7 @@
 .login-error {
     background: rgba($error, 0.1);
     border: 1px solid rgba($error, 0.3);
-    color: lighten($error, 10%);
+    color: color.adjust($error, $lightness: 10%);
     padding: $spacing-4;
     border-radius: $radius-md;
     margin-bottom: $spacing-6;

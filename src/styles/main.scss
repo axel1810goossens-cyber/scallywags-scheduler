@@ -1,7 +1,7 @@
-@import './reset';
-@import './variables';
-@import './mixins';
-@import './components/layout';
+@use './reset';
+@use './variables' as *;
+@use './mixins' as *;
+@use './components/layout';
 
 // Global Styles
 body {
