@@ -4,6 +4,7 @@ const today = new Date();
 const startOfCurrentWeek = startOfWeek(today, { weekStartsOn: 1 });
 
 export const mockEmployees = [
+    // Servers (5)
     {
         id: 'emp_1',
         name: 'Sarah Jenkins',
@@ -19,6 +20,64 @@ export const mockEmployees = [
         }
     },
     {
+        id: 'emp_6',
+        name: 'Emma Thompson',
+        email: 'emma.t@scallywags.com',
+        phone: '+1 (555) 789-0123',
+        position: 'Server',
+        availability: {
+            tuesday: [{ start: '17:00', end: '04:00' }],
+            wednesday: [{ start: '17:00', end: '04:00' }],
+            thursday: [{ start: '17:00', end: '04:00' }],
+            friday: [{ start: '17:00', end: '04:00' }],
+            saturday: [{ start: '11:00', end: '04:00' }]
+        }
+    },
+    {
+        id: 'emp_7',
+        name: 'Daniel Martinez',
+        email: 'daniel.m@scallywags.com',
+        phone: '+1 (555) 890-1234',
+        position: 'Server',
+        availability: {
+            monday: [{ start: '17:00', end: '04:00' }],
+            wednesday: [{ start: '11:00', end: '04:00' }],
+            friday: [{ start: '11:00', end: '04:00' }],
+            saturday: [{ start: '17:00', end: '04:00' }],
+            sunday: [{ start: '11:00', end: '04:00' }]
+        }
+    },
+    {
+        id: 'emp_8',
+        name: 'Olivia Chen',
+        email: 'olivia.c@scallywags.com',
+        phone: '+1 (555) 901-2345',
+        position: 'Server',
+        availability: {
+            tuesday: [{ start: '11:00', end: '04:00' }],
+            thursday: [{ start: '11:00', end: '04:00' }],
+            friday: [{ start: '17:00', end: '04:00' }],
+            saturday: [{ start: '11:00', end: '04:00' }],
+            sunday: [{ start: '17:00', end: '04:00' }]
+        }
+    },
+    {
+        id: 'emp_9',
+        name: 'Marcus Johnson',
+        email: 'marcus.j@scallywags.com',
+        phone: '+1 (555) 012-3456',
+        position: 'Server',
+        availability: {
+            monday: [{ start: '11:00', end: '04:00' }],
+            tuesday: [{ start: '17:00', end: '04:00' }],
+            thursday: [{ start: '17:00', end: '04:00' }],
+            saturday: [{ start: '11:00', end: '04:00' }],
+            sunday: [{ start: '11:00', end: '04:00' }]
+        }
+    },
+    
+    // Bartenders (5)
+    {
         id: 'emp_2',
         name: 'Mike Ross',
         email: 'mike.r@scallywags.com',
@@ -31,6 +90,62 @@ export const mockEmployees = [
             sunday: [{ start: '12:00', end: '04:00' }]
         }
     },
+    {
+        id: 'emp_10',
+        name: 'Sophia Rodriguez',
+        email: 'sophia.r@scallywags.com',
+        phone: '+1 (555) 123-7890',
+        position: 'Bartender',
+        availability: {
+            monday: [{ start: '17:00', end: '04:00' }],
+            wednesday: [{ start: '17:00', end: '04:00' }],
+            friday: [{ start: '16:00', end: '04:00' }],
+            saturday: [{ start: '16:00', end: '04:00' }]
+        }
+    },
+    {
+        id: 'emp_11',
+        name: 'James Wilson',
+        email: 'james.w@scallywags.com',
+        phone: '+1 (555) 234-8901',
+        position: 'Bartender',
+        availability: {
+            tuesday: [{ start: '17:00', end: '04:00' }],
+            thursday: [{ start: '16:00', end: '04:00' }],
+            friday: [{ start: '16:00', end: '04:00' }],
+            saturday: [{ start: '16:00', end: '04:00' }],
+            sunday: [{ start: '12:00', end: '04:00' }]
+        }
+    },
+    {
+        id: 'emp_12',
+        name: 'Isabella Garcia',
+        email: 'isabella.g@scallywags.com',
+        phone: '+1 (555) 345-9012',
+        position: 'Bartender',
+        availability: {
+            monday: [{ start: '17:00', end: '04:00' }],
+            tuesday: [{ start: '17:00', end: '04:00' }],
+            wednesday: [{ start: '17:00', end: '04:00' }],
+            saturday: [{ start: '16:00', end: '04:00' }]
+        }
+    },
+    {
+        id: 'emp_13',
+        name: 'Ethan Brown',
+        email: 'ethan.b@scallywags.com',
+        phone: '+1 (555) 456-0123',
+        position: 'Bartender',
+        availability: {
+            wednesday: [{ start: '17:00', end: '04:00' }],
+            thursday: [{ start: '16:00', end: '04:00' }],
+            friday: [{ start: '16:00', end: '04:00' }],
+            saturday: [{ start: '16:00', end: '04:00' }],
+            sunday: [{ start: '12:00', end: '04:00' }]
+        }
+    },
+    
+    // Managers (5)
     {
         id: 'emp_3',
         name: 'Jessica Pearson',
@@ -46,6 +161,64 @@ export const mockEmployees = [
         }
     },
     {
+        id: 'emp_14',
+        name: 'Alexander Lee',
+        email: 'alex.l@scallywags.com',
+        phone: '+1 (555) 567-1234',
+        position: 'Manager',
+        availability: {
+            tuesday: [{ start: '14:00', end: '04:00' }],
+            wednesday: [{ start: '14:00', end: '04:00' }],
+            thursday: [{ start: '14:00', end: '04:00' }],
+            friday: [{ start: '14:00', end: '04:00' }],
+            saturday: [{ start: '10:00', end: '04:00' }]
+        }
+    },
+    {
+        id: 'emp_15',
+        name: 'Victoria Davis',
+        email: 'victoria.d@scallywags.com',
+        phone: '+1 (555) 678-2345',
+        position: 'Manager',
+        availability: {
+            monday: [{ start: '14:00', end: '00:00' }],
+            wednesday: [{ start: '14:00', end: '00:00' }],
+            friday: [{ start: '10:00', end: '20:00' }],
+            saturday: [{ start: '10:00', end: '04:00' }],
+            sunday: [{ start: '10:00', end: '20:00' }]
+        }
+    },
+    {
+        id: 'emp_16',
+        name: 'Christopher Taylor',
+        email: 'chris.t@scallywags.com',
+        phone: '+1 (555) 789-3456',
+        position: 'Manager',
+        availability: {
+            monday: [{ start: '10:00', end: '20:00' }],
+            tuesday: [{ start: '10:00', end: '20:00' }],
+            thursday: [{ start: '14:00', end: '04:00' }],
+            saturday: [{ start: '14:00', end: '04:00' }],
+            sunday: [{ start: '10:00', end: '20:00' }]
+        }
+    },
+    {
+        id: 'emp_17',
+        name: 'Natalie Anderson',
+        email: 'natalie.a@scallywags.com',
+        phone: '+1 (555) 890-4567',
+        position: 'Manager',
+        availability: {
+            tuesday: [{ start: '10:00', end: '20:00' }],
+            wednesday: [{ start: '10:00', end: '20:00' }],
+            friday: [{ start: '14:00', end: '04:00' }],
+            saturday: [{ start: '10:00', end: '04:00' }],
+            sunday: [{ start: '10:00', end: '20:00' }]
+        }
+    },
+    
+    // Kitchen Staff (5)
+    {
         id: 'emp_4',
         name: 'Louis Litt',
         email: 'louis.l@scallywags.com',
@@ -59,6 +232,64 @@ export const mockEmployees = [
         }
     },
     {
+        id: 'emp_18',
+        name: 'Miguel Santos',
+        email: 'miguel.s@scallywags.com',
+        phone: '+1 (555) 901-5678',
+        position: 'Kitchen',
+        availability: {
+            tuesday: [{ start: '10:00', end: '00:00' }],
+            wednesday: [{ start: '10:00', end: '00:00' }],
+            thursday: [{ start: '10:00', end: '00:00' }],
+            friday: [{ start: '10:00', end: '02:00' }],
+            saturday: [{ start: '10:00', end: '02:00' }]
+        }
+    },
+    {
+        id: 'emp_19',
+        name: 'Amy Wu',
+        email: 'amy.w@scallywags.com',
+        phone: '+1 (555) 012-6789',
+        position: 'Kitchen',
+        availability: {
+            monday: [{ start: '10:00', end: '00:00' }],
+            tuesday: [{ start: '10:00', end: '00:00' }],
+            thursday: [{ start: '10:00', end: '00:00' }],
+            saturday: [{ start: '10:00', end: '02:00' }],
+            sunday: [{ start: '10:00', end: '00:00' }]
+        }
+    },
+    {
+        id: 'emp_20',
+        name: 'David Kim',
+        email: 'david.k@scallywags.com',
+        phone: '+1 (555) 123-7901',
+        position: 'Kitchen',
+        availability: {
+            monday: [{ start: '10:00', end: '00:00' }],
+            wednesday: [{ start: '10:00', end: '00:00' }],
+            thursday: [{ start: '10:00', end: '00:00' }],
+            friday: [{ start: '10:00', end: '02:00' }],
+            sunday: [{ start: '10:00', end: '00:00' }]
+        }
+    },
+    {
+        id: 'emp_21',
+        name: 'Priya Patel',
+        email: 'priya.p@scallywags.com',
+        phone: '+1 (555) 234-8012',
+        position: 'Kitchen',
+        availability: {
+            tuesday: [{ start: '10:00', end: '00:00' }],
+            wednesday: [{ start: '10:00', end: '00:00' }],
+            friday: [{ start: '10:00', end: '02:00' }],
+            saturday: [{ start: '10:00', end: '02:00' }],
+            sunday: [{ start: '10:00', end: '00:00' }]
+        }
+    },
+    
+    // Hosts (5)
+    {
         id: 'emp_5',
         name: 'Rachel Zane',
         email: 'rachel.z@scallywags.com',
@@ -66,6 +297,62 @@ export const mockEmployees = [
         position: 'Host',
         availability: {
             friday: [{ start: '17:00', end: '02:00' }],
+            saturday: [{ start: '11:00', end: '02:00' }],
+            sunday: [{ start: '11:00', end: '02:00' }]
+        }
+    },
+    {
+        id: 'emp_22',
+        name: 'Lily Chang',
+        email: 'lily.c@scallywags.com',
+        phone: '+1 (555) 345-9123',
+        position: 'Host',
+        availability: {
+            monday: [{ start: '17:00', end: '00:00' }],
+            tuesday: [{ start: '17:00', end: '00:00' }],
+            thursday: [{ start: '17:00', end: '02:00' }],
+            friday: [{ start: '17:00', end: '02:00' }],
+            saturday: [{ start: '11:00', end: '02:00' }]
+        }
+    },
+    {
+        id: 'emp_23',
+        name: 'Ryan Murphy',
+        email: 'ryan.m@scallywags.com',
+        phone: '+1 (555) 456-0234',
+        position: 'Host',
+        availability: {
+            wednesday: [{ start: '17:00', end: '00:00' }],
+            thursday: [{ start: '17:00', end: '02:00' }],
+            friday: [{ start: '17:00', end: '02:00' }],
+            saturday: [{ start: '11:00', end: '02:00' }],
+            sunday: [{ start: '11:00', end: '02:00' }]
+        }
+    },
+    {
+        id: 'emp_24',
+        name: 'Grace Foster',
+        email: 'grace.f@scallywags.com',
+        phone: '+1 (555) 567-1345',
+        position: 'Host',
+        availability: {
+            monday: [{ start: '17:00', end: '00:00' }],
+            tuesday: [{ start: '17:00', end: '00:00' }],
+            wednesday: [{ start: '17:00', end: '00:00' }],
+            friday: [{ start: '17:00', end: '02:00' }],
+            sunday: [{ start: '11:00', end: '02:00' }]
+        }
+    },
+    {
+        id: 'emp_25',
+        name: 'Noah Bennett',
+        email: 'noah.b@scallywags.com',
+        phone: '+1 (555) 678-2456',
+        position: 'Host',
+        availability: {
+            tuesday: [{ start: '17:00', end: '00:00' }],
+            wednesday: [{ start: '17:00', end: '00:00' }],
+            thursday: [{ start: '17:00', end: '02:00' }],
             saturday: [{ start: '11:00', end: '02:00' }],
             sunday: [{ start: '11:00', end: '02:00' }]
         }

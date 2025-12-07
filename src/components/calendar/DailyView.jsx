@@ -8,6 +8,7 @@ import { shiftService } from '../../services/shiftService';
 import { coverageHelpers } from '../../utils/coverageHelpers';
 import { generateDailySchedule } from '../../utils/autoScheduler';
 import ShiftForm from '../shifts/ShiftForm';
+import Modal from '../common/Modal';
 import './DailyView.scss';
 
 const DailyView = ({ currentDate }) => {
@@ -15,6 +16,15 @@ const DailyView = ({ currentDate }) => {
     const [editingShift, setEditingShift] = useState(null);
     const [settings, setSettings] = useState(null);
     const [generating, setGenerating] = useState(false);
+    const [modal, setModal] = useState({
+        isOpen: false,
+        type: 'info',
+        title: '',
+        message: '',
+        onConfirm: null,
+        onCancel: null,
+        showCancel: false
+    });
 
     const dateStr = dateHelpers.formatDateForDB(currentDate);
     const { shifts, loading, deleteShift } = useShifts(dateStr, dateStr);
@@ -50,18 +60,49 @@ const DailyView = ({ currentDate }) => {
         setEditingShift(null);
     };
 
+    const closeModal = () => {
+        setModal({
+            isOpen: false,
+            type: 'info',
+            title: '',
+            message: '',
+            onConfirm: null,
+            onCancel: null,
+            showCancel: false
+        });
+    };
+
+    const showModalMessage = (type, title, message, onConfirm = null, showCancel = false) => {
+        setModal({
+            isOpen: true,
+            type,
+            title,
+            message,
+            onConfirm,
+            onCancel: closeModal,
+            showCancel
+        });
+    };
+
     const handleGenerateSchedule = async () => {
         if (!settings) {
-            alert('Settings not loaded. Please try again.');
+            showModalMessage('error', 'Error', 'Settings not loaded. Please try again.');
             return;
         }
 
-        const confirmed = window.confirm(
-            'This will generate shifts for today based on employee availability. Continue?'
+        showModalMessage(
+            'confirm',
+            'Generate Schedule',
+            'This will generate shifts for today based on employee availability. Continue?',
+            () => {
+                closeModal();
+                generateScheduleConfirmed();
+            },
+            true
         );
+    };
 
-        if (!confirmed) return;
-
+    const generateScheduleConfirmed = async () => {
         setGenerating(true);
 
         try {
@@ -73,7 +114,7 @@ const DailyView = ({ currentDate }) => {
             const generatedShifts = generateDailySchedule(currentDate, empResult.data, settings);
 
             if (generatedShifts.length === 0) {
-                alert('No shifts could be generated. Check employee availability and requirements.');
+                showModalMessage('warning', 'No Shifts Generated', 'No shifts could be generated. Check employee availability and requirements.');
                 setGenerating(false);
                 return;
             }
@@ -81,13 +122,13 @@ const DailyView = ({ currentDate }) => {
             const result = await shiftService.batchAddShifts(generatedShifts);
 
             if (result.success) {
-                alert(`Successfully generated ${result.count} shifts!`);
+                showModalMessage('success', 'Success', `Successfully generated ${result.count} shifts!`);
             } else {
-                alert('Failed to save generated shifts.');
+                showModalMessage('error', 'Error', 'Failed to save generated shifts.');
             }
         } catch (error) {
             console.error('Error generating schedule:', error);
-            alert('An error occurred while generating the schedule.');
+            showModalMessage('error', 'Error', 'An error occurred while generating the schedule.');
         } finally {
             setGenerating(false);
         }
@@ -206,6 +247,19 @@ const DailyView = ({ currentDate }) => {
                     onClose={handleFormClose}
                 />
             )}
+
+            <Modal
+                isOpen={modal.isOpen}
+                onClose={closeModal}
+                title={modal.title}
+                message={modal.message}
+                type={modal.type}
+                onConfirm={modal.onConfirm}
+                onCancel={modal.onCancel}
+                showCancel={modal.showCancel}
+                confirmText={modal.type === 'confirm' ? 'Continue' : 'OK'}
+                cancelText="Cancel"
+            />
         </div>
     );
 };

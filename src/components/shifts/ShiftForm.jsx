@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FiX, FiSave, FiAlertCircle } from 'react-icons/fi';
+import { FiX, FiSave, FiAlertCircle, FiSearch, FiChevronDown } from 'react-icons/fi';
 import { useEmployees } from '../../hooks/useEmployees';
 import { useShifts } from '../../hooks/useShifts';
 import { dateHelpers } from '../../utils/dateHelpers';
@@ -12,12 +12,14 @@ const ShiftForm = ({ shift, defaultDate, onClose }) => {
         date: defaultDate ? dateHelpers.formatDateForDB(defaultDate) : '',
         startTime: '09:00',
         endTime: '17:00',
-        position: 'Server',
+        position: '',
         notes: ''
     });
 
     const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [employeeSearch, setEmployeeSearch] = useState('');
+    const [showEmployeeDropdown, setShowEmployeeDropdown] = useState(false);
 
     const { employees, loading: employeesLoading } = useEmployees();
     const { addShift, updateShift } = useShifts();
@@ -29,16 +31,61 @@ const ShiftForm = ({ shift, defaultDate, onClose }) => {
                 date: shift.date,
                 startTime: shift.startTime,
                 endTime: shift.endTime,
-                position: shift.position || 'Server',
+                position: shift.position || '',
                 notes: shift.notes || ''
             });
+            // Set employee search to selected employee name
+            const selectedEmployee = employees.find(emp => emp.id === shift.employeeId);
+            if (selectedEmployee) {
+                setEmployeeSearch(selectedEmployee.name);
+            }
         }
-    }, [shift]);
+    }, [shift, employees]);
+
+    // Filter employees based on position and search
+    const filteredEmployees = employees.filter(emp => {
+        const matchesPosition = !formData.position || emp.position === formData.position;
+        const matchesSearch = emp.name.toLowerCase().includes(employeeSearch.toLowerCase());
+        return matchesPosition && matchesSearch;
+    });
+
+    // Get selected employee name for display
+    const selectedEmployee = employees.find(emp => emp.id === formData.employeeId);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        setFormData(prev => ({ 
+            ...prev, 
+            [name]: value,
+            // Clear employee selection when position changes
+            ...(name === 'position' && { employeeId: '' })
+        }));
         setError('');
+        
+        // Clear employee search when position changes
+        if (name === 'position') {
+            setEmployeeSearch('');
+        }
+    };
+
+    const handleEmployeeSelect = (employee) => {
+        setFormData(prev => ({ 
+            ...prev, 
+            employeeId: employee.id,
+            position: employee.position // Auto-set position when employee is selected
+        }));
+        setEmployeeSearch(employee.name);
+        setShowEmployeeDropdown(false);
+        setError('');
+    };
+
+    const handleEmployeeSearchChange = (e) => {
+        setEmployeeSearch(e.target.value);
+        setShowEmployeeDropdown(true);
+        // Clear selection if search doesn't match selected employee
+        if (selectedEmployee && !selectedEmployee.name.toLowerCase().includes(e.target.value.toLowerCase())) {
+            setFormData(prev => ({ ...prev, employeeId: '' }));
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -120,19 +167,61 @@ const ShiftForm = ({ shift, defaultDate, onClose }) => {
 
                 <form onSubmit={handleSubmit} className="shift-form">
                     <div className="form-group">
-                        <label>Employee</label>
+                        <label>Position</label>
                         <select
-                            name="employeeId"
-                            value={formData.employeeId}
+                            name="position"
+                            value={formData.position}
                             onChange={handleChange}
-                            disabled={employeesLoading}
-                            required
                         >
-                            <option value="">Select Employee</option>
-                            {employees.map(emp => (
-                                <option key={emp.id} value={emp.id}>{emp.name}</option>
-                            ))}
+                            <option value="">Select Position</option>
+                            <option value="Server">Server</option>
+                            <option value="Bartender">Bartender</option>
+                            <option value="Host">Host</option>
+                            <option value="Kitchen">Kitchen</option>
+                            <option value="Manager">Manager</option>
                         </select>
+                    </div>
+
+                    <div className="form-group">
+                        <label>Employee</label>
+                        <div className="employee-search-container">
+                            <div className="search-input-wrapper">
+                                <FiSearch className="search-icon" />
+                                <input
+                                    type="text"
+                                    placeholder={formData.position ? `Search ${formData.position}s...` : "Select position first"}
+                                    value={employeeSearch}
+                                    onChange={handleEmployeeSearchChange}
+                                    onFocus={() => setShowEmployeeDropdown(true)}
+                                    disabled={employeesLoading || !formData.position}
+                                    className="employee-search-input"
+                                />
+                                <FiChevronDown 
+                                    className={`dropdown-icon ${showEmployeeDropdown ? 'rotated' : ''}`}
+                                    onClick={() => setShowEmployeeDropdown(!showEmployeeDropdown)}
+                                />
+                            </div>
+                            {showEmployeeDropdown && formData.position && (
+                                <div className="employee-dropdown">
+                                    {filteredEmployees.length > 0 ? (
+                                        filteredEmployees.map(emp => (
+                                            <div
+                                                key={emp.id}
+                                                className={`employee-option ${formData.employeeId === emp.id ? 'selected' : ''}`}
+                                                onClick={() => handleEmployeeSelect(emp)}
+                                            >
+                                                <span className="employee-name">{emp.name}</span>
+                                                <span className="employee-position">{emp.position}</span>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="no-employees">
+                                            {employeeSearch ? 'No employees found' : `No ${formData.position}s available`}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     <div className="form-group">
@@ -167,21 +256,6 @@ const ShiftForm = ({ shift, defaultDate, onClose }) => {
                                 required
                             />
                         </div>
-                    </div>
-
-                    <div className="form-group">
-                        <label>Position</label>
-                        <select
-                            name="position"
-                            value={formData.position}
-                            onChange={handleChange}
-                        >
-                            <option value="Server">Server</option>
-                            <option value="Bartender">Bartender</option>
-                            <option value="Host">Host</option>
-                            <option value="Kitchen">Kitchen</option>
-                            <option value="Manager">Manager</option>
-                        </select>
                     </div>
 
                     <div className="form-group">

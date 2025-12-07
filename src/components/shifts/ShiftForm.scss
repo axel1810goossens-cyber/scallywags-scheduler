@@ -99,6 +99,117 @@
     gap: $spacing-4;
 }
 
+.employee-search-container {
+    position: relative;
+}
+
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: $spacing-3;
+    color: $gray-400;
+    z-index: 1;
+}
+
+.employee-search-container .employee-search-input {
+    width: 100%;
+    padding: $spacing-3 $spacing-10 $spacing-3 $spacing-10;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: $radius-md;
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: $white !important;
+    font-size: $font-size-base;
+
+    &::placeholder {
+        color: $gray-400;
+    }
+
+    &:focus {
+        outline: none;
+        border-color: $primary-light !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+.dropdown-icon {
+    position: absolute;
+    right: $spacing-3;
+    color: $gray-400;
+    transition: transform $transition-base;
+    cursor: pointer;
+
+    &.rotated {
+        transform: rotate(180deg);
+    }
+
+    &:hover {
+        color: $gray-300;
+    }
+}
+
+.employee-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: $bg-secondary;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: $radius-md;
+    box-shadow: $shadow-xl;
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 2px;
+}
+
+.employee-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: $spacing-3 $spacing-4;
+    cursor: pointer;
+    transition: background-color $transition-base;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    &.selected {
+        background: rgba($primary, 0.2);
+        color: $primary-light;
+    }
+}
+
+.employee-name {
+    font-weight: $font-weight-medium;
+    color: $white;
+}
+
+.employee-position {
+    font-size: $font-size-sm;
+    color: $gray-400;
+    padding: 2px 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: $radius-sm;
+}
+
+.no-employees {
+    padding: $spacing-4;
+    text-align: center;
+    color: $gray-400;
+    font-style: italic;
+}
+
 .modal-actions {
     display: flex;
     justify-content: flex-end;
