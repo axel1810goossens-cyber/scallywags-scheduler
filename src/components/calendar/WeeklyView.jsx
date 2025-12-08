@@ -256,6 +256,7 @@ const WeeklyView = ({ currentDate }) => {
   const exportAsJPEG = async () => {
     if (!weekGridRef.current) return;
 
+    // Capture the element without padding first
     const dataUrl = await toPng(weekGridRef.current, {
       quality: 1,
       pixelRatio: 2,
@@ -264,7 +265,6 @@ const WeeklyView = ({ currentDate }) => {
       skipAutoScale: false,
       preferredFontFormat: 'woff2',
       cacheBust: true,
-      pixelPadding: { top: 24, right: 24, bottom: 24, left: 24 },
       filter: node => {
         // Skip external resources that might cause CORS issues
         if (node.tagName === 'LINK' && node.rel === 'stylesheet') {
@@ -277,7 +277,30 @@ const WeeklyView = ({ currentDate }) => {
       },
     });
 
-    return dataUrl;
+    // Add padding manually using canvas
+    const padding = 60;
+    // eslint-disable-next-line no-undef
+    const img = new Image();
+    img.src = dataUrl;
+
+    return new Promise(resolve => {
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = img.width + padding * 2;
+        canvas.height = img.height + padding * 2;
+
+        // Fill background with same color
+        ctx.fillStyle = '#1a1d29';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Draw the image with padding offset
+        ctx.drawImage(img, padding, padding);
+
+        resolve(canvas.toDataURL('image/jpeg', 1));
+      };
+    });
   };
 
   const exportAsXLSX = async () => {
@@ -517,7 +540,7 @@ const WeeklyView = ({ currentDate }) => {
       } else {
         showModalMessage('error', 'Error', 'Failed to save generated shifts.');
       }
-    } catch (error) {
+    } catch {
       showModalMessage(
         'error',
         'Error',
@@ -539,13 +562,6 @@ const WeeklyView = ({ currentDate }) => {
 
   return (
     <div className="weekly-view">
-      <div className="weekly-view-header">
-        <h3>
-          Week of {dateHelpers.formatDate(start, 'MMM dd')} -{' '}
-          {dateHelpers.formatDate(end, 'MMM dd, yyyy')}
-        </h3>
-      </div>
-
       <div className="filters-section">
         <div className="filters-container">
           <div className="filter-group">

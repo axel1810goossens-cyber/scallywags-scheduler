@@ -114,6 +114,9 @@ const CalendarView = () => {
 
           <div className="date-display">
             <h2>{getDateRangeText()}</h2>
+            {dateHelpers.isToday(currentDate) && (
+              <span className="today-badge">Today</span>
+            )}
           </div>
 
           <button onClick={handleNext} className="control-button">

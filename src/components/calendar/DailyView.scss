@@ -13,7 +13,13 @@
   border-radius: $radius-md;
   display: flex;
   gap: $spacing-3;
+  align-items: flex-start;
   animation: fadeIn 0.3s ease;
+
+  .add-shift-button {
+    @include button-primary;
+    flex-shrink: 0;
+  }
 
   &.optimal {
     background: rgba($success, 0.1);
@@ -91,51 +97,6 @@
         }
       }
     }
-  }
-}
-
-.daily-view-header {
-  @include flex-between;
-  flex-wrap: wrap;
-  gap: $spacing-4;
-  margin-bottom: $spacing-6;
-
-  h3 {
-    font-size: $font-size-xl;
-    font-weight: $font-weight-bold;
-    color: $white;
-    display: flex;
-    align-items: center;
-    gap: $spacing-3;
-
-    .today-badge {
-      background: $primary-light;
-      color: $white;
-      padding: 6px 16px;
-      border-radius: $radius-full;
-      font-size: $font-size-sm;
-      text-transform: uppercase;
-      font-weight: $font-weight-bold;
-    }
-  }
-
-  .header-actions {
-    display: flex;
-    gap: $spacing-3;
-    flex-wrap: wrap;
-  }
-
-  .generate-button {
-    @include button-secondary;
-
-    &:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-  }
-
-  .add-shift-button {
-    @include button-primary;
   }
 }
 

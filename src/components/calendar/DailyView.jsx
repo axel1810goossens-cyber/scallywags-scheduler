@@ -129,23 +129,11 @@ const DailyView = ({ currentDate }) => {
 
   return (
     <div className="daily-view">
-      <div className="daily-view-header">
-        <h3>
-          Shifts for{' '}
-          {dateHelpers.formatDate(currentDate, 'EEEE, MMMM dd, yyyy')}
-          {dateHelpers.isToday(currentDate) && (
-            <span className="today-badge">Today</span>
-          )}
-        </h3>
-        <div className="header-actions">
+      {coverage && coverage.status !== 'closed' && (
+        <div className={`coverage-banner ${coverage.status}`}>
           <button onClick={handleAddShift} className="add-shift-button">
             <FiPlus /> Add Shift
           </button>
-        </div>
-      </div>
-
-      {coverage && coverage.status !== 'closed' && (
-        <div className={`coverage-banner ${coverage.status}`}>
           <div className="status-icon">
             {coverage.status === 'optimal' && <FiCheckCircle />}
             {coverage.status === 'warning' && <FiAlertTriangle />}

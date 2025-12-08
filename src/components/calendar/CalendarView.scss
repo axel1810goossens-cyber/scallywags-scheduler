@@ -58,6 +58,18 @@
       font-size: $font-size-xl;
     }
   }
+
+  .today-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: $primary-light;
+    color: $white;
+    border-radius: $radius-full;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
 }
 
 .today-button {
