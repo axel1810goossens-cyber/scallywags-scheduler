@@ -33,10 +33,7 @@ const EmployeeForm = ({ employee, onClose }) => {
     // Only initialize once to prevent resetting form when employee object reference changes due to polling
     if (initializedRef.current) return;
 
-    console.log('useEffect running - initializing form, employee:', employee);
-
     if (employee) {
-      console.log('Setting form data from employee:', employee);
       initializedRef.current = true;
 
       setFormData({
@@ -52,7 +49,6 @@ const EmployeeForm = ({ employee, onClose }) => {
       DAYS_OF_WEEK.forEach(day => {
         initialAvailability[day.id] = [];
       });
-      console.log('Initializing empty form');
 
       setFormData({
         name: '',
@@ -89,19 +85,12 @@ const EmployeeForm = ({ employee, onClose }) => {
       event.stopPropagation();
     }
 
-    console.log('addTimeSlot called for:', dayId);
-    console.log('Current formData.availability:', formData.availability);
-
     setFormData(prev => {
-      console.log('Previous state:', prev);
       const newAvailability = { ...prev.availability };
       const daySlots = [...(newAvailability[dayId] || [])];
 
       daySlots.push({ start: '09:00', end: '17:00' });
       newAvailability[dayId] = daySlots;
-
-      console.log('New availability:', newAvailability);
-      console.log('New state:', { ...prev, availability: newAvailability });
 
       return { ...prev, availability: newAvailability };
     });

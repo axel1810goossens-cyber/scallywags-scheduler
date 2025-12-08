@@ -8,116 +8,149 @@ import { dateHelpers } from './dateHelpers';
  * @returns {Array} - Array of generated shift objects
  */
 export const generateDailySchedule = (date, employees, settings) => {
-    const dayName = dateHelpers.getDayName(date).toLowerCase();
-    const dayHours = settings.openingHours[dayName];
+  const dayName = dateHelpers.getDayName(date).toLowerCase();
+  const dayHours = settings.openingHours[dayName];
 
-    if (dayHours.closed) {
-        return [];
+  if (dayHours.closed) {
+    return [];
+  }
+
+  const generatedShifts = [];
+  const dateStr = dateHelpers.formatDateForDB(date);
+
+  // Get requirements for each position
+  const requirements = settings.requirements;
+
+  // Filter employees by availability for this day
+  const availableEmployees = employees.filter(emp => {
+    return (
+      emp.availability &&
+      emp.availability[dayName] &&
+      emp.availability[dayName].length > 0
+    );
+  });
+
+  // Group employees by position
+  const employeesByPosition = {};
+  availableEmployees.forEach(emp => {
+    if (!employeesByPosition[emp.position]) {
+      employeesByPosition[emp.position] = [];
+    }
+    employeesByPosition[emp.position].push(emp);
+  });
+
+  // Track assigned employees to prevent double-booking
+  const assignedEmployeeIds = new Set();
+
+  // Generate shifts for each position based on requirements
+  Object.entries(requirements).forEach(([position, req]) => {
+    const positionEmployees = employeesByPosition[position] || [];
+
+    if (positionEmployees.length === 0) {
+      return;
     }
 
-    const generatedShifts = [];
-    const dateStr = dateHelpers.formatDateForDB(date);
+    // Filter out already assigned employees
+    const unassignedEmployees = positionEmployees.filter(
+      emp => !assignedEmployeeIds.has(emp.id)
+    );
 
-    // Get requirements for each position
-    const requirements = settings.requirements;
+    if (unassignedEmployees.length === 0) {
+      return;
+    }
 
-    // Filter employees by availability for this day
-    const availableEmployees = employees.filter(emp => {
-        return emp.availability && emp.availability[dayName] && emp.availability[dayName].length > 0;
-    });
+    // Calculate shift duration to meet minimum hours
+    const shiftDuration = Math.ceil(req.minHours / req.minCount);
 
-    // Group employees by position
-    const employeesByPosition = {};
-    availableEmployees.forEach(emp => {
-        if (!employeesByPosition[emp.position]) {
-            employeesByPosition[emp.position] = [];
-        }
-        employeesByPosition[emp.position].push(emp);
-    });
+    // Distribute shifts among available employees
+    for (let i = 0; i < req.minCount && i < unassignedEmployees.length; i++) {
+      const employee = unassignedEmployees[i];
 
-    // Generate shifts for each position based on requirements
-    Object.entries(requirements).forEach(([position, req]) => {
-        const positionEmployees = employeesByPosition[position] || [];
+      // Skip if employee doesn't have availability for this day
+      if (
+        !employee.availability ||
+        !employee.availability[dayName] ||
+        employee.availability[dayName].length === 0
+      ) {
+        continue;
+      }
 
-        if (positionEmployees.length === 0) {
-            console.warn(`No available employees for position: ${position} on ${dayName}`);
-            return;
-        }
+      const availability = employee.availability[dayName][0]; // Use first availability slot
 
-        // Calculate shift duration to meet minimum hours
-        const shiftDuration = Math.ceil(req.minHours / req.minCount);
+      // Parse availability times
+      const availStart = availability.start;
+      const availEnd = availability.end;
 
-        // Distribute shifts among available employees
-        for (let i = 0; i < req.minCount && i < positionEmployees.length; i++) {
-            const employee = positionEmployees[i];
-            const availability = employee.availability[dayName][0]; // Use first availability slot
+      // Calculate shift times within availability
+      let shiftStart = availStart;
+      let shiftEnd = calculateEndTime(availStart, shiftDuration);
 
-            // Parse availability times
-            const availStart = availability.start;
-            const availEnd = availability.end;
+      // Ensure shift doesn't exceed availability
+      if (compareTime(shiftEnd, availEnd) > 0) {
+        shiftEnd = availEnd;
+      }
 
-            // Calculate shift times within availability
-            let shiftStart = availStart;
-            let shiftEnd = calculateEndTime(availStart, shiftDuration);
+      // Double-check employee isn't already assigned (defensive programming)
+      if (assignedEmployeeIds.has(employee.id)) {
+        continue;
+      }
 
-            // Ensure shift doesn't exceed availability
-            if (compareTime(shiftEnd, availEnd) > 0) {
-                shiftEnd = availEnd;
-            }
+      generatedShifts.push({
+        employeeId: employee.id,
+        employeeName: employee.name,
+        position: employee.position,
+        date: dateStr,
+        startTime: shiftStart,
+        endTime: shiftEnd,
+        notes: 'Auto-generated',
+      });
 
-            generatedShifts.push({
-                employeeId: employee.id,
-                employeeName: employee.name,
-                position: employee.position,
-                date: dateStr,
-                startTime: shiftStart,
-                endTime: shiftEnd,
-                notes: 'Auto-generated'
-            });
-        }
-    });
+      // Mark employee as assigned
+      assignedEmployeeIds.add(employee.id);
+    }
+  });
 
-    return generatedShifts;
+  return generatedShifts;
 };
 
 /**
  * Generate shifts for an entire week
  */
 export const generateWeeklySchedule = (startDate, employees, settings) => {
-    const allShifts = [];
+  const allShifts = [];
 
-    for (let i = 0; i < 7; i++) {
-        const date = new Date(startDate);
-        date.setDate(date.getDate() + i);
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(startDate);
+    date.setDate(date.getDate() + i);
 
-        const dailyShifts = generateDailySchedule(date, employees, settings);
-        allShifts.push(...dailyShifts);
-    }
+    const dailyShifts = generateDailySchedule(date, employees, settings);
+    allShifts.push(...dailyShifts);
+  }
 
-    return allShifts;
+  return allShifts;
 };
 
 // Helper function to calculate end time given start time and duration in hours
 function calculateEndTime(startTime, durationHours) {
-    const [hours, minutes] = startTime.split(':').map(Number);
-    let endHours = hours + durationHours;
-    let endMinutes = minutes;
+  const [hours, minutes] = startTime.split(':').map(Number);
+  let endHours = hours + durationHours;
+  let endMinutes = minutes;
 
-    // Handle overflow past 24 hours
-    if (endHours >= 24) {
-        endHours = endHours % 24;
-    }
+  // Handle overflow past 24 hours
+  if (endHours >= 24) {
+    endHours = endHours % 24;
+  }
 
-    return `${String(endHours).padStart(2, '0')}:${String(endMinutes).padStart(2, '0')}`;
+  return `${String(endHours).padStart(2, '0')}:${String(endMinutes).padStart(2, '0')}`;
 }
 
 // Helper function to compare two time strings (HH:MM format)
 function compareTime(time1, time2) {
-    const [h1, m1] = time1.split(':').map(Number);
-    const [h2, m2] = time2.split(':').map(Number);
+  const [h1, m1] = time1.split(':').map(Number);
+  const [h2, m2] = time2.split(':').map(Number);
 
-    const minutes1 = h1 * 60 + m1;
-    const minutes2 = h2 * 60 + m2;
+  const minutes1 = h1 * 60 + m1;
+  const minutes2 = h2 * 60 + m2;
 
-    return minutes1 - minutes2;
+  return minutes1 - minutes2;
 }

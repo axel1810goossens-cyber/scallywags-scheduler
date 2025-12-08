@@ -10,65 +10,29 @@ import {
   writeBatch,
 } from 'firebase/firestore';
 import { db } from './firebase';
-import { mockShifts } from '../utils/mockData';
 import { localStorageService } from './localStorageService';
 
 const SHIFTS_COLLECTION = 'shifts';
 
-// Initialize localStorage with mock data on first load
-localStorageService.initialize(null, mockShifts, null);
-
-// Check if Firebase is properly configured
-const isFirebaseConfigured = () => {
-  try {
-    return db && import.meta.env.VITE_FIREBASE_API_KEY !== 'your-api-key-here';
-  } catch {
-    return false;
-  }
-};
-
 export const shiftService = {
   // Add new shift
   addShift: async shiftData => {
-    if (!isFirebaseConfigured()) {
-      const newShift = {
-        ...shiftData,
-        id: `shift_${Date.now()}`,
-        createdAt: new Date(),
-      };
-      localStorageService.addShift(newShift);
-      return { success: true, id: newShift.id };
-    }
-
     try {
       const docRef = await addDoc(collection(db, SHIFTS_COLLECTION), {
         ...shiftData,
         createdAt: new Date(),
       });
+      // Invalidate cache on write
+      localStorageService.invalidateShiftsCache();
       return { success: true, id: docRef.id };
     } catch (error) {
-      const newShift = {
-        ...shiftData,
-        id: `shift_${Date.now()}`,
-        createdAt: new Date(),
-      };
-      localStorageService.addShift(newShift);
-      return { success: true, id: newShift.id };
+      console.error('Error adding shift:', error);
+      return { success: false, error: error.message };
     }
   },
 
   // Batch add multiple shifts
   batchAddShifts: async shiftsData => {
-    if (!isFirebaseConfigured()) {
-      const newShifts = shiftsData.map((shiftData, index) => ({
-        ...shiftData,
-        id: `shift_${Date.now()}_${index}`,
-        createdAt: new Date(),
-      }));
-      localStorageService.addShifts(newShifts);
-      return { success: true, count: newShifts.length };
-    }
-
     try {
       const batch = writeBatch(db);
       shiftsData.forEach(shiftData => {
@@ -79,89 +43,47 @@ export const shiftService = {
         });
       });
       await batch.commit();
+      // Invalidate cache on write
+      localStorageService.invalidateShiftsCache();
       return { success: true, count: shiftsData.length };
     } catch (error) {
-      const newShifts = shiftsData.map((shiftData, index) => ({
-        ...shiftData,
-        id: `shift_${Date.now()}_${index}`,
-        createdAt: new Date(),
-      }));
-      localStorageService.addShifts(newShifts);
-      return { success: true, count: newShifts.length };
+      console.error('Error batch adding shifts:', error);
+      return { success: false, error: error.message };
     }
   },
 
   // Update shift
   updateShift: async (id, updates) => {
-    if (!isFirebaseConfigured()) {
-      const success = localStorageService.updateShift(id, updates);
-      return success
-        ? { success: true }
-        : { success: false, error: 'Shift not found' };
-    }
-
     try {
       const shiftRef = doc(db, SHIFTS_COLLECTION, id);
       await updateDoc(shiftRef, {
         ...updates,
         updatedAt: new Date(),
       });
+      // Invalidate cache on write
+      localStorageService.invalidateShiftsCache();
       return { success: true };
     } catch (error) {
-      const success = localStorageService.updateShift(id, updates);
-      return success
-        ? { success: true }
-        : { success: false, error: error.message };
+      console.error('Error updating shift:', error);
+      return { success: false, error: error.message };
     }
   },
 
   // Delete shift
   deleteShift: async id => {
-    if (!isFirebaseConfigured()) {
-      localStorageService.deleteShift(id);
-      return { success: true };
-    }
-
     try {
       await deleteDoc(doc(db, SHIFTS_COLLECTION, id));
+      // Invalidate cache on write
+      localStorageService.invalidateShiftsCache();
       return { success: true };
     } catch (error) {
-      localStorageService.deleteShift(id);
-      return { success: true };
+      console.error('Error deleting shift:', error);
+      return { success: false, error: error.message };
     }
   },
 
   // Subscribe to shifts within date range
   subscribeToShifts: (startDate, endDate, callback) => {
-    // For localStorage, we'll simulate subscription with polling
-    if (!isFirebaseConfigured()) {
-      console.log(
-        'Using localStorage for shifts, date range:',
-        startDate,
-        'to',
-        endDate
-      );
-
-      // Initial call
-      const filteredShifts = localStorageService.getShiftsByDateRange(
-        startDate,
-        endDate
-      );
-      callback(filteredShifts);
-
-      // Set up polling to detect changes (every 500ms)
-      const interval = setInterval(() => {
-        const shifts = localStorageService.getShiftsByDateRange(
-          startDate,
-          endDate
-        );
-        callback(shifts);
-      }, 500);
-
-      // Return cleanup function
-      return () => clearInterval(interval);
-    }
-
     try {
       // Convert dates to YYYY-MM-DD format for string comparison
       const startDateStr =
@@ -189,49 +111,19 @@ export const shiftService = {
           callback(shifts);
         },
         error => {
-          console.warn(
-            'Firebase subscription failed, using localStorage',
-            error
-          );
-          const filteredShifts = localStorageService.getShiftsByDateRange(
-            startDate,
-            endDate
-          );
-          callback(filteredShifts);
+          console.error('Firebase subscription error:', error);
+          callback([]);
         }
       );
     } catch (error) {
-      console.warn('Firebase init failed, using localStorage');
-      const filteredShifts = localStorageService.getShiftsByDateRange(
-        startDate,
-        endDate
-      );
-      callback(filteredShifts);
+      console.error('Error setting up subscription:', error);
+      callback([]);
       return () => {};
     }
   },
 
   // Swap shifts
   swapShifts: async (shiftId1, shiftId2, employee1, employee2) => {
-    if (!isFirebaseConfigured()) {
-      const shifts = localStorageService.getShifts();
-      const idx1 = shifts.findIndex(s => s.id === shiftId1);
-      const idx2 = shifts.findIndex(s => s.id === shiftId2);
-
-      if (idx1 !== -1 && idx2 !== -1) {
-        localStorageService.updateShift(shiftId1, {
-          employeeId: employee2.id,
-          employeeName: employee2.name,
-        });
-        localStorageService.updateShift(shiftId2, {
-          employeeId: employee1.id,
-          employeeName: employee1.name,
-        });
-        return { success: true };
-      }
-      return { success: false, error: 'Shifts not found' };
-    }
-
     try {
       const batch = writeBatch(db);
 
@@ -251,23 +143,11 @@ export const shiftService = {
       });
 
       await batch.commit();
+      // Invalidate cache on write
+      localStorageService.invalidateShiftsCache();
       return { success: true };
     } catch (error) {
-      const shifts = localStorageService.getShifts();
-      const idx1 = shifts.findIndex(s => s.id === shiftId1);
-      const idx2 = shifts.findIndex(s => s.id === shiftId2);
-
-      if (idx1 !== -1 && idx2 !== -1) {
-        localStorageService.updateShift(shiftId1, {
-          employeeId: employee2.id,
-          employeeName: employee2.name,
-        });
-        localStorageService.updateShift(shiftId2, {
-          employeeId: employee1.id,
-          employeeName: employee1.name,
-        });
-        return { success: true };
-      }
+      console.error('Error swapping shifts:', error);
       return { success: false, error: error.message };
     }
   },

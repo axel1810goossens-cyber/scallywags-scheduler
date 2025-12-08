@@ -12,12 +12,6 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.token.role == 'admin';
     }
     
-    // Users collection - only admins can read/write
-    match /users/{userId} {
-      allow read: if isAdmin();
-      allow write: if isAdmin();
-    }
-    
     // Employees collection - authenticated users can read, only admins can write
     match /employees/{employeeId} {
       allow read: if isAuthenticated();

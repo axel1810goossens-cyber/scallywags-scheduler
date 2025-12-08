@@ -1,5 +1,4 @@
 import dotenv from 'dotenv';
-import bcrypt from 'bcrypt';
 import { initializeFirebase, getDb } from '../config/firebase.js';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
@@ -60,40 +59,7 @@ const initializeDatabase = async () => {
     // Load mock data
     const mockData = loadMockData();
 
-    // 1. Create admin user
-    console.log('👤 Creating admin user...');
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@scallywags.com';
-    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
-    const adminName = process.env.ADMIN_NAME || 'Admin Manager';
-
-    // Check if admin already exists
-    const existingAdmin = await db
-      .collection('users')
-      .where('email', '==', adminEmail)
-      .limit(1)
-      .get();
-
-    if (!existingAdmin.empty) {
-      console.log('⚠️  Admin user already exists, skipping...');
-    } else {
-      const passwordHash = await bcrypt.hash(adminPassword, 10);
-
-      await db.collection('users').add({
-        email: adminEmail,
-        name: adminName,
-        role: 'admin',
-        passwordHash,
-        createdAt: new Date().toISOString(),
-        lastLogin: null,
-      });
-
-      console.log('✅ Admin user created successfully');
-      console.log(`   Email: ${adminEmail}`);
-      console.log(`   Password: ${adminPassword}`);
-      console.log('   ⚠️  CHANGE THIS PASSWORD IN PRODUCTION!\n');
-    }
-
-    // 2. Initialize default settings
+    // 1. Initialize default settings
     console.log('⚙️  Creating default settings...');
     const settingsRef = db.collection('settings').doc('app_settings');
     const settingsDoc = await settingsRef.get();
@@ -121,7 +87,7 @@ const initializeDatabase = async () => {
       console.log('✅ Default settings created\n');
     }
 
-    // 3. Create employees from mock data
+    // 2. Create employees from mock data
     console.log('👥 Checking for existing employees...');
     const employeesSnapshot = await db.collection('employees').limit(1).get();
 
