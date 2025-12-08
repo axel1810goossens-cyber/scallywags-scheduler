@@ -84,27 +84,45 @@ export const authService = {
 
   // Subscribe to auth state changes
   onAuthStateChange: callback => {
-    // Check for stored mock user on initialization
+    // If Firebase is configured, use Firebase's auth state listener
+    if (auth) {
+      return onAuthStateChanged(auth, user => {
+        if (user) {
+          // Firebase user is logged in
+          callback(user);
+        } else {
+          // No Firebase user, check for mock user
+          const storedMockUser = localStorage.getItem('mockUser');
+          if (storedMockUser) {
+            try {
+              const mockUser = JSON.parse(storedMockUser);
+              callback(mockUser);
+            } catch (error) {
+              console.error('Error parsing stored mock user:', error);
+              callback(null);
+            }
+          } else {
+            callback(null);
+          }
+        }
+      });
+    }
+
+    // Firebase not configured, check for mock user only
     const storedMockUser = localStorage.getItem('mockUser');
     if (storedMockUser) {
       try {
         const mockUser = JSON.parse(storedMockUser);
-        // Call callback immediately with mock user
         setTimeout(() => callback(mockUser), 0);
       } catch (error) {
         console.error('Error parsing stored mock user:', error);
+        setTimeout(() => callback(null), 0);
       }
     } else {
-      // No mock user, call callback with null to indicate not logged in
       setTimeout(() => callback(null), 0);
     }
 
-    // If Firebase is not configured, return empty unsubscribe function
-    if (!auth) {
-      return () => {};
-    }
-
-    return onAuthStateChanged(auth, callback);
+    return () => {};
   },
 
   // Get current user
