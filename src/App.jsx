@@ -1,4 +1,10 @@
-import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Outlet,
+  Navigate,
+} from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import Login from './components/auth/Login';
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -11,36 +17,42 @@ import './styles/main.scss';
 
 // Layout component for authenticated pages
 const DashboardLayout = () => {
-    return (
-        <div className="dashboard-layout">
-            <Navbar />
-            <div className="dashboard-content">
-                <Sidebar />
-                <main className="main-content">
-                    <Outlet />
-                </main>
-            </div>
-        </div>
-    );
+  return (
+    <div className="dashboard-layout">
+      <Navbar />
+      <div className="dashboard-content">
+        <Sidebar />
+        <main className="main-content">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
 };
 
 function App() {
-    return (
-        <Router>
-            <AuthProvider>
-                <Routes>
-                    <Route path="/login" element={<Login />} />
+  return (
+    <Router>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<Login />} />
 
-                    <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
-                        <Route path="/calendar" element={<CalendarView />} />
-                        <Route path="/employees" element={<EmployeeList />} />
-                        <Route path="/settings" element={<SettingsPage />} />
-                        <Route path="/" element={<Navigate to="/calendar" replace />} />
-                    </Route>
-                </Routes>
-            </AuthProvider>
-        </Router>
-    );
+          <Route
+            element={
+              <ProtectedRoute>
+                <DashboardLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="/calendar" element={<CalendarView />} />
+            <Route path="/employees" element={<EmployeeList />} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/" element={<Navigate to="/calendar" replace />} />
+          </Route>
+        </Routes>
+      </AuthProvider>
+    </Router>
+  );
 }
 
 export default App;

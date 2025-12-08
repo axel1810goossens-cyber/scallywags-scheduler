@@ -3,172 +3,171 @@
 @use '../../styles/mixins' as *;
 
 .login-page {
-    min-height: 100vh;
-    @include flex-center;
-    position: relative;
-    overflow: hidden;
+  min-height: 100vh;
+  @include flex-center;
+  position: relative;
+  overflow: hidden;
 }
 
 .login-background {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
 }
 
 .login-blob {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.3;
-    animation: float 20s ease-in-out infinite;
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.3;
+  animation: float 20s ease-in-out infinite;
 
-    &-1 {
-        width: 400px;
-        height: 400px;
-        background: $primary;
-        top: -100px;
-        left: -100px;
-        animation-delay: 0s;
-    }
+  &-1 {
+    width: 400px;
+    height: 400px;
+    background: $primary;
+    top: -100px;
+    left: -100px;
+    animation-delay: 0s;
+  }
 
-    &-2 {
-        width: 500px;
-        height: 500px;
-        background: $secondary;
-        bottom: -150px;
-        right: -150px;
-        animation-delay: 7s;
-    }
+  &-2 {
+    width: 500px;
+    height: 500px;
+    background: $secondary;
+    bottom: -150px;
+    right: -150px;
+    animation-delay: 7s;
+  }
 
-    &-3 {
-        width: 300px;
-        height: 300px;
-        background: $primary-light;
-        top: 50%;
-        right: 10%;
-        animation-delay: 14s;
-    }
+  &-3 {
+    width: 300px;
+    height: 300px;
+    background: $primary-light;
+    top: 50%;
+    right: 10%;
+    animation-delay: 14s;
+  }
 }
 
 @keyframes float {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
 
-    0%,
-    100% {
-        transform: translate(0, 0) scale(1);
-    }
+  33% {
+    transform: translate(30px, -30px) scale(1.1);
+  }
 
-    33% {
-        transform: translate(30px, -30px) scale(1.1);
-    }
-
-    66% {
-        transform: translate(-20px, 20px) scale(0.9);
-    }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
 }
 
 .login-container {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 450px;
-    padding: $spacing-4;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 450px;
+  padding: $spacing-4;
 }
 
 .login-card {
-    @include glass-dark;
-    padding: $spacing-10;
-    border-radius: $radius-2xl;
-    @include slide-up;
+  @include glass-dark;
+  padding: $spacing-10;
+  border-radius: $radius-2xl;
+  @include slide-up;
 
-    @include md {
-        padding: $spacing-12;
-    }
+  @include md {
+    padding: $spacing-12;
+  }
 }
 
 .login-header {
-    text-align: center;
-    margin-bottom: $spacing-8;
+  text-align: center;
+  margin-bottom: $spacing-8;
 }
 
 .login-title {
-    font-size: $font-size-4xl;
-    font-weight: $font-weight-bold;
-    background: linear-gradient(135deg, $primary-light, $secondary-light);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: $spacing-2;
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  background: linear-gradient(135deg, $primary-light, $secondary-light);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: $spacing-2;
 }
 
 .login-subtitle {
-    font-size: $font-size-lg;
-    color: $gray-300;
-    font-weight: $font-weight-medium;
+  font-size: $font-size-lg;
+  color: $gray-300;
+  font-weight: $font-weight-medium;
 }
 
 .login-error {
-    background: rgba($error, 0.1);
-    border: 1px solid rgba($error, 0.3);
-    color: color.adjust($error, $lightness: 10%);
-    padding: $spacing-4;
-    border-radius: $radius-md;
-    margin-bottom: $spacing-6;
-    font-size: $font-size-sm;
-    text-align: center;
+  background: rgba($error, 0.1);
+  border: 1px solid rgba($error, 0.3);
+  color: color.adjust($error, $lightness: 10%);
+  padding: $spacing-4;
+  border-radius: $radius-md;
+  margin-bottom: $spacing-6;
+  font-size: $font-size-sm;
+  text-align: center;
 }
 
 .login-form {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-6;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-6;
 }
 
 .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+
+  label {
     display: flex;
-    flex-direction: column;
+    align-items: center;
     gap: $spacing-2;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-300;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
 
-    label {
-        display: flex;
-        align-items: center;
-        gap: $spacing-2;
-        font-size: $font-size-sm;
-        font-weight: $font-weight-medium;
-        color: $gray-300;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+  input {
+    @include input-dark;
+    font-size: $font-size-base;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
-
-    input {
-        @include input-dark;
-        font-size: $font-size-base;
-
-        &:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-    }
+  }
 }
 
 .login-button {
-    @include button-primary;
-    width: 100%;
-    padding: $spacing-4;
-    font-size: $font-size-lg;
-    margin-top: $spacing-4;
+  @include button-primary;
+  width: 100%;
+  padding: $spacing-4;
+  font-size: $font-size-lg;
+  margin-top: $spacing-4;
 
-    &:disabled {
-        opacity: 0.7;
-    }
+  &:disabled {
+    opacity: 0.7;
+  }
 }
 
 .login-footer {
-    margin-top: $spacing-8;
-    text-align: center;
+  margin-top: $spacing-8;
+  text-align: center;
 
-    p {
-        font-size: $font-size-sm;
-        color: $gray-400;
-        font-weight: $font-weight-medium;
-    }
+  p {
+    font-size: $font-size-sm;
+    color: $gray-400;
+    font-weight: $font-weight-medium;
+  }
 }

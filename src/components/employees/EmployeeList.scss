@@ -2,113 +2,113 @@
 @use '../../styles/mixins' as *;
 
 .employee-list-page {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-6;
-    height: 100%;
-    overflow-y: auto;
-    @include custom-scrollbar-dark;
-    padding-right: $spacing-2;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-6;
+  height: 100%;
+  overflow-y: auto;
+  @include custom-scrollbar-dark;
+  padding-right: $spacing-2;
 }
 
 .employee-list-loading {
-    @include flex-center;
-    @include flex-column;
-    gap: $spacing-4;
-    padding: $spacing-16;
+  @include flex-center;
+  @include flex-column;
+  gap: $spacing-4;
+  padding: $spacing-16;
 
-    p {
-        color: $gray-300;
-        font-size: $font-size-lg;
-    }
+  p {
+    color: $gray-300;
+    font-size: $font-size-lg;
+  }
 }
 
 .page-header {
-    @include flex-between;
-    flex-wrap: wrap;
-    gap: $spacing-4;
+  @include flex-between;
+  flex-wrap: wrap;
+  gap: $spacing-4;
 
-    .header-content {
-        h1 {
-            font-size: $font-size-3xl;
-            font-weight: $font-weight-bold;
-            color: $white;
-            margin-bottom: $spacing-1;
-        }
-
-        p {
-            color: $gray-400;
-        }
+  .header-content {
+    h1 {
+      font-size: $font-size-3xl;
+      font-weight: $font-weight-bold;
+      color: $white;
+      margin-bottom: $spacing-1;
     }
+
+    p {
+      color: $gray-400;
+    }
+  }
 }
 
 .add-button {
-    @include button-primary;
-    padding: $spacing-3 $spacing-6;
+  @include button-primary;
+  padding: $spacing-3 $spacing-6;
 }
 
 .filters-bar {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-4;
-    background: rgba(255, 255, 255, 0.05);
-    padding: $spacing-4;
-    border-radius: $radius-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+  background: rgba(255, 255, 255, 0.05);
+  padding: $spacing-4;
+  border-radius: $radius-lg;
 
-    @include md {
-        flex-direction: row;
-    }
+  @include md {
+    flex-direction: row;
+  }
 }
 
 .search-box {
-    flex: 1;
-    position: relative;
+  flex: 1;
+  position: relative;
 
-    svg {
-        position: absolute;
-        left: $spacing-3;
-        top: 50%;
-        transform: translateY(-50%);
-        color: $gray-400;
-    }
+  svg {
+    position: absolute;
+    left: $spacing-3;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $gray-400;
+  }
 
-    input {
-        @include input-dark;
-        padding-left: $spacing-10;
-    }
+  input {
+    @include input-dark;
+    padding-left: $spacing-10;
+  }
 }
 
 .filter-box {
-    position: relative;
-    min-width: 200px;
+  position: relative;
+  min-width: 200px;
 
-    svg {
-        position: absolute;
-        left: $spacing-3;
-        top: 50%;
-        transform: translateY(-50%);
-        color: $gray-400;
-        z-index: 1;
-    }
+  svg {
+    position: absolute;
+    left: $spacing-3;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $gray-400;
+    z-index: 1;
+  }
 
-    select {
-        @include input-dark;
-        padding-left: $spacing-10;
-        appearance: none;
-        cursor: pointer;
-    }
+  select {
+    @include input-dark;
+    padding-left: $spacing-10;
+    appearance: none;
+    cursor: pointer;
+  }
 }
 
 .employees-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: $spacing-4;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-4;
 
-    @include md {
-        grid-template-columns: repeat(2, 1fr);
-    }
+  @include md {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
-    @include xl {
-        grid-template-columns: repeat(3, 1fr);
-    }
+  @include xl {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }

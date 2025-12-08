@@ -2,99 +2,99 @@
 @use '../../styles/mixins' as *;
 
 .yearly-view {
-    height: 100%;
-    overflow-y: auto;
-    @include custom-scrollbar-dark;
+  height: 100%;
+  overflow-y: auto;
+  @include custom-scrollbar-dark;
 }
 
 .yearly-view-loading {
-    @include flex-center;
-    @include flex-column;
-    gap: $spacing-4;
-    padding: $spacing-16;
+  @include flex-center;
+  @include flex-column;
+  gap: $spacing-4;
+  padding: $spacing-16;
 
-    p {
-        color: $gray-300;
-        font-size: $font-size-lg;
-    }
+  p {
+    color: $gray-300;
+    font-size: $font-size-lg;
+  }
 }
 
 .year-grid {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    gap: $spacing-4;
-    padding-bottom: $spacing-8;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: $spacing-4;
+  padding-bottom: $spacing-8;
 
-    @include md {
-        grid-template-columns: repeat(2, 1fr);
-    }
+  @include md {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
-    @include lg {
-        grid-template-columns: repeat(3, 1fr);
-    }
+  @include lg {
+    grid-template-columns: repeat(3, 1fr);
+  }
 
-    @include xl {
-        grid-template-columns: repeat(4, 1fr);
-    }
+  @include xl {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 .month-card {
-    background: $bg-secondary;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: $radius-lg;
-    padding: $spacing-4;
-    cursor: pointer;
-    transition: all $transition-base;
+  background: $bg-secondary;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: $radius-lg;
+  padding: $spacing-4;
+  cursor: pointer;
+  transition: all $transition-base;
 
-    &:hover {
-        background: rgba(255, 255, 255, 0.05);
-        transform: translateY(-2px);
-        box-shadow: $shadow-lg;
-        border-color: rgba(255, 255, 255, 0.2);
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-2px);
+    box-shadow: $shadow-lg;
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  &.current {
+    border-color: $primary-light;
+    box-shadow: 0 0 15px rgba($primary-light, 0.15);
+
+    .month-header h4 {
+      color: $primary-light;
     }
-
-    &.current {
-        border-color: $primary-light;
-        box-shadow: 0 0 15px rgba($primary-light, 0.15);
-
-        .month-header h4 {
-            color: $primary-light;
-        }
-    }
+  }
 }
 
 .month-header {
-    @include flex-between;
-    margin-bottom: $spacing-4;
+  @include flex-between;
+  margin-bottom: $spacing-4;
 
-    h4 {
-        font-size: $font-size-lg;
-        font-weight: $font-weight-semibold;
-        color: $white;
-    }
+  h4 {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $white;
+  }
 
-    .shift-count {
-        font-size: $font-size-xs;
-        color: $gray-400;
-        background: rgba(255, 255, 255, 0.05);
-        padding: $spacing-1 $spacing-2;
-        border-radius: $radius-full;
-    }
+  .shift-count {
+    font-size: $font-size-xs;
+    color: $gray-400;
+    background: rgba(255, 255, 255, 0.05);
+    padding: $spacing-1 $spacing-2;
+    border-radius: $radius-full;
+  }
 }
 
 .month-mini-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 2px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
 }
 
 .mini-day {
-    aspect-ratio: 1;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 2px;
+  aspect-ratio: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
 
-    &.has-shifts {
-        background: $primary-light;
-        opacity: 0.6;
-    }
+  &.has-shifts {
+    background: $primary-light;
+    opacity: 0.6;
+  }
 }

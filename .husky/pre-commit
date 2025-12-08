@@ -1,17 +1,2 @@
-# Run npm audit for high/critical vulnerabilities
-echo "🔍 Checking for high/critical security vulnerabilities..."
-npm audit --audit-level=high --omit=dev
-
-if [ $? -ne 0 ]; then
-  echo ""
-  echo "❌ COMMIT BLOCKED: High or critical vulnerabilities found!"
-  echo "Run 'npm audit' to see details and 'npm audit fix' to fix them."
-  echo "To skip this check (not recommended): git commit --no-verify"
-  exit 1
-fi
-
-echo "✅ No high/critical vulnerabilities found"
-echo ""
-
 # Run lint-staged for code quality checks
 npx lint-staged

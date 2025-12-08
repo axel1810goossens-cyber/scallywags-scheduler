@@ -3,154 +3,187 @@
 @use '../../styles/mixins' as *;
 
 .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(5px);
-    z-index: $z-modal-backdrop;
-    @include flex-center;
-    padding: $spacing-4;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  z-index: $z-modal-backdrop;
+  @include flex-center;
+  padding: $spacing-4;
 }
 
 .modal-dialog {
-    @include glass-dark;
-    width: 100%;
-    max-width: 400px;
-    border-radius: $radius-xl;
-    overflow: hidden;
-    @include slide-up;
-    z-index: $z-modal;
+  @include glass-dark;
+  width: 100%;
+  max-width: 400px;
+  border-radius: $radius-xl;
+  overflow: hidden;
+  @include slide-up;
+  z-index: $z-modal;
 }
 
 .modal-header {
-    @include flex-between;
-    padding: $spacing-5 $spacing-6 $spacing-3 $spacing-6;
+  @include flex-between;
+  padding: $spacing-5 $spacing-6 $spacing-3 $spacing-6;
 
-    .modal-title {
-        font-size: $font-size-lg;
-        font-weight: $font-weight-bold;
-        color: $white;
-        margin: 0;
-    }
+  .modal-title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: $white;
+    margin: 0;
+  }
 }
 
 .modal-close-button {
-    @include flex-center;
-    width: 32px;
-    height: 32px;
-    border-radius: $radius-full;
-    color: $gray-400;
-    transition: all $transition-base;
+  @include flex-center;
+  width: 32px;
+  height: 32px;
+  border-radius: $radius-full;
+  color: $gray-400;
+  transition: all $transition-base;
 
-    &:hover {
-        background: rgba(255, 255, 255, 0.1);
-        color: $white;
-    }
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: $white;
+  }
 }
 
 .modal-body {
-    padding: $spacing-4 $spacing-6;
+  padding: $spacing-4 $spacing-6;
 }
 
 .modal-content-wrapper {
-    display: flex;
-    align-items: flex-start;
-    gap: $spacing-4;
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-4;
 }
 
 .modal-icon {
-    width: 24px;
-    height: 24px;
-    flex-shrink: 0;
-    margin-top: 2px;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  margin-top: 2px;
 
-    &.success {
-        color: $success;
-    }
+  &.success {
+    color: $success;
+  }
 
-    &.warning {
-        color: $warning;
-    }
+  &.warning {
+    color: $warning;
+  }
 
-    &.error {
-        color: $error;
-    }
+  &.error {
+    color: $error;
+  }
 
-    &.info {
-        color: $info;
-    }
+  &.info {
+    color: $info;
+  }
 
-    &.confirm {
-        color: $warning;
-    }
+  &.confirm {
+    color: $warning;
+  }
 }
 
 .modal-message {
-    color: $gray-200;
-    line-height: 1.5;
-    flex: 1;
+  color: $gray-200;
+  line-height: 1.5;
+  flex: 1;
 }
 
 .modal-footer {
-    padding: $spacing-4 $spacing-6 $spacing-6 $spacing-6;
-    display: flex;
-    justify-content: flex-end;
-    gap: $spacing-3;
+  padding: $spacing-4 $spacing-6 $spacing-6 $spacing-6;
+  display: flex;
+  justify-content: flex-end;
+  gap: $spacing-3;
 }
 
 .modal-button {
-    padding: $spacing-3 $spacing-5;
-    border-radius: $radius-md;
-    font-weight: $font-weight-medium;
-    font-size: $font-size-sm;
-    transition: all $transition-base;
-    min-width: 80px;
-    border: 1px solid transparent;
+  padding: $spacing-3 $spacing-5;
+  border-radius: $radius-md;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-sm;
+  transition: all $transition-base;
+  min-width: 80px;
+  border: 1px solid transparent;
 
-    &.cancel {
-        color: $gray-300;
-        background: transparent;
-        border-color: rgba(255, 255, 255, 0.2);
+  &.cancel {
+    color: $gray-300;
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.2);
 
-        &:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: $white;
-        }
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: $white;
+    }
+  }
+
+  &.confirm {
+    color: $white;
+
+    &.success {
+      background: linear-gradient(
+        135deg,
+        $success,
+        color.adjust($success, $lightness: -10%)
+      );
+
+      &:hover {
+        background: linear-gradient(
+          135deg,
+          color.adjust($success, $lightness: -5%),
+          color.adjust($success, $lightness: -15%)
+        );
+      }
     }
 
+    &.warning,
     &.confirm {
-        color: $white;
+      background: linear-gradient(
+        135deg,
+        $warning,
+        color.adjust($warning, $lightness: -10%)
+      );
 
-        &.success {
-            background: linear-gradient(135deg, $success, color.adjust($success, $lightness: -10%));
-
-            &:hover {
-                background: linear-gradient(135deg, color.adjust($success, $lightness: -5%), color.adjust($success, $lightness: -15%));
-            }
-        }
-
-        &.warning, &.confirm {
-            background: linear-gradient(135deg, $warning, color.adjust($warning, $lightness: -10%));
-
-            &:hover {
-                background: linear-gradient(135deg, color.adjust($warning, $lightness: -5%), color.adjust($warning, $lightness: -15%));
-            }
-        }
-
-        &.error {
-            background: linear-gradient(135deg, $error, color.adjust($error, $lightness: -10%));
-
-            &:hover {
-                background: linear-gradient(135deg, color.adjust($error, $lightness: -5%), color.adjust($error, $lightness: -15%));
-            }
-        }
-
-        &.info {
-            background: linear-gradient(135deg, $info, color.adjust($info, $lightness: -10%));
-
-            &:hover {
-                background: linear-gradient(135deg, color.adjust($info, $lightness: -5%), color.adjust($info, $lightness: -15%));
-            }
-        }
+      &:hover {
+        background: linear-gradient(
+          135deg,
+          color.adjust($warning, $lightness: -5%),
+          color.adjust($warning, $lightness: -15%)
+        );
+      }
     }
+
+    &.error {
+      background: linear-gradient(
+        135deg,
+        $error,
+        color.adjust($error, $lightness: -10%)
+      );
+
+      &:hover {
+        background: linear-gradient(
+          135deg,
+          color.adjust($error, $lightness: -5%),
+          color.adjust($error, $lightness: -15%)
+        );
+      }
+    }
+
+    &.info {
+      background: linear-gradient(
+        135deg,
+        $info,
+        color.adjust($info, $lightness: -10%)
+      );
+
+      &:hover {
+        background: linear-gradient(
+          135deg,
+          color.adjust($info, $lightness: -5%),
+          color.adjust($info, $lightness: -15%)
+        );
+      }
+    }
+  }
 }

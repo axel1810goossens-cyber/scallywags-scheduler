@@ -2,99 +2,341 @@
 @use '../../styles/mixins' as *;
 
 .weekly-view {
-    height: 100%;
+  height: 100%;
 }
 
-.weekly-view-loading {
-    @include flex-center;
-    @include flex-column;
-    gap: $spacing-4;
-    padding: $spacing-16;
+.weekly-view-header {
+  margin-bottom: $spacing-4;
 
-    p {
-        color: $gray-300;
-        font-size: $font-size-lg;
-    }
+  h3 {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $white;
+  }
 }
 
-.week-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: $spacing-4;
-
-    @include md {
-        grid-template-columns: repeat(7, 1fr);
-    }
+.filters-section {
+  background: $bg-secondary;
+  border-radius: $radius-lg;
+  padding: $spacing-5;
+  margin-bottom: $spacing-6;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.day-column {
-    background: $bg-secondary;
-    border-radius: $radius-lg;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    min-height: 400px;
+.filters-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-4;
+  margin-bottom: $spacing-4;
 
-    &.today {
-        border-color: $primary-light;
-        box-shadow: 0 0 20px rgba($primary-light, 0.3);
-
-        .day-header {
-            background: linear-gradient(135deg, rgba($primary, 0.3), rgba($primary-light, 0.3));
-        }
-    }
+  @include md {
+    grid-template-columns: repeat(3, 1fr) auto;
+    align-items: end;
+  }
 }
 
-.day-header {
-    background: rgba(255, 255, 255, 0.05);
-    padding: $spacing-4;
-    text-align: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
 
-    .today-label {
-        display: inline-block;
-        margin-top: $spacing-1;
-        padding: 2px 8px;
-        background: $primary-light;
-        color: $white;
-        border-radius: $radius-full;
-        font-size: $font-size-xs;
-        font-weight: $font-weight-bold;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-}
-
-.day-name {
+  label {
     font-size: $font-size-sm;
     font-weight: $font-weight-semibold;
     color: $gray-300;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: $spacing-1;
+  }
+}
+
+.filter-select,
+.filter-input {
+  padding: $spacing-2 $spacing-3;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: $radius-md;
+  color: $white;
+  font-size: $font-size-base;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-light;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  &::placeholder {
+    color: $gray-500;
+  }
+}
+
+.filter-select {
+  cursor: pointer;
+
+  option {
+    background: $bg-primary;
+    color: $white;
+  }
+}
+
+.clear-filters-button {
+  padding: $spacing-2 $spacing-4;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: $radius-md;
+  color: $gray-300;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  white-space: nowrap;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: $white;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+  width: 100%;
+
+  @include md {
+    flex-direction: row;
+    width: auto;
+  }
+}
+
+.generate-button,
+.export-button {
+  @include button-secondary;
+  flex: 1;
+
+  @include md {
+    flex: initial;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.export-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #5568d3 0%, #63408a 100%);
+  }
+}
+
+.weekly-view-loading {
+  @include flex-center;
+  @include flex-column;
+  gap: $spacing-4;
+  padding: $spacing-16;
+
+  p {
+    color: $gray-300;
+    font-size: $font-size-lg;
+  }
+}
+
+.week-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-4;
+
+  @include md {
+    grid-template-columns: repeat(7, 1fr);
+  }
+}
+
+.day-column {
+  background: $bg-secondary;
+  border-radius: $radius-lg;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+
+  &.today {
+    border-color: $primary-light;
+    box-shadow: 0 0 20px rgba($primary-light, 0.3);
+
+    .day-header {
+      background: linear-gradient(
+        135deg,
+        rgba($primary, 0.3),
+        rgba($primary-light, 0.3)
+      );
+    }
+  }
+}
+
+.day-header {
+  background: rgba(255, 255, 255, 0.05);
+  padding: $spacing-4;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  .today-label {
+    display: inline-block;
+    margin-top: $spacing-1;
+    padding: 2px 8px;
+    background: $primary-light;
+    color: $white;
+    border-radius: $radius-full;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+.day-name {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $gray-300;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: $spacing-1;
 }
 
 .day-date {
-    font-size: $font-size-2xl;
-    font-weight: $font-weight-bold;
-    color: $white;
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: $white;
 }
 
 .day-shifts {
-    flex: 1;
-    padding: $spacing-3;
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-2;
-    overflow-y: auto;
-    @include custom-scrollbar-dark;
+  flex: 1;
+  padding: $spacing-3;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+  overflow-y: auto;
+  @include custom-scrollbar-dark;
 }
 
 .no-shifts {
-    @include flex-center;
-    flex: 1;
-    color: $gray-500;
+  @include flex-center;
+  flex: 1;
+  color: $gray-500;
+  font-size: $font-size-sm;
+  font-style: italic;
+}
+
+// Export Modal
+.export-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: $spacing-4;
+}
+
+.export-modal {
+  background: $bg-secondary;
+  border-radius: $radius-lg;
+  padding: $spacing-8;
+  max-width: 500px;
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+
+  h3 {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $white;
+    margin-bottom: $spacing-2;
+  }
+
+  p {
+    color: $gray-300;
+    margin-bottom: $spacing-6;
+  }
+}
+
+.export-options {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+  margin-bottom: $spacing-6;
+}
+
+.export-option-button {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: $radius-md;
+  padding: $spacing-4;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+  text-align: left;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: $primary-light;
+    transform: translateY(-2px);
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+    color: $primary-light;
+    flex-shrink: 0;
+  }
+
+  .format-name {
+    display: block;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $white;
+    margin-bottom: $spacing-1;
+  }
+
+  .format-desc {
+    display: block;
     font-size: $font-size-sm;
-    font-style: italic;
+    color: $gray-400;
+  }
+}
+
+.cancel-export-button {
+  width: 100%;
+  padding: $spacing-3;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: $radius-md;
+  color: $gray-300;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: $white;
+  }
 }

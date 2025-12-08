@@ -2,70 +2,70 @@
 @use '../../styles/mixins' as *;
 
 .employee-card {
-    @include card-dark;
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-4;
+  @include card-dark;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
 }
 
 .card-header {
-    display: flex;
-    align-items: center;
-    gap: $spacing-3;
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
 }
 
 .employee-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: $radius-full;
-    background: linear-gradient(135deg, $primary, $primary-light);
-    @include flex-center;
-    font-size: $font-size-xl;
-    font-weight: $font-weight-bold;
-    color: $white;
-    box-shadow: $shadow-md;
+  width: 48px;
+  height: 48px;
+  border-radius: $radius-full;
+  background: linear-gradient(135deg, $primary, $primary-light);
+  @include flex-center;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $white;
+  box-shadow: $shadow-md;
 }
 
 .employee-info {
-    flex: 1;
+  flex: 1;
 
-    h3 {
-        font-size: $font-size-lg;
-        font-weight: $font-weight-semibold;
-        color: $white;
-        margin-bottom: 2px;
-    }
+  h3 {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $white;
+    margin-bottom: 2px;
+  }
 
-    .position {
-        font-size: $font-size-sm;
-        color: $primary-light;
-        background: rgba($primary, 0.1);
-        padding: 2px 8px;
-        border-radius: $radius-full;
-    }
+  .position {
+    font-size: $font-size-sm;
+    color: $primary-light;
+    background: rgba($primary, 0.1);
+    padding: 2px 8px;
+    border-radius: $radius-full;
+  }
 }
 
 .card-actions {
-    display: flex;
-    gap: $spacing-2;
+  display: flex;
+  gap: $spacing-2;
 }
 
 .card-details {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-2;
-    padding-top: $spacing-3;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+  padding-top: $spacing-3;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .detail-item {
-    display: flex;
-    align-items: center;
-    gap: $spacing-3;
-    color: $gray-300;
-    font-size: $font-size-sm;
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  color: $gray-300;
+  font-size: $font-size-sm;
 
-    svg {
-        color: $gray-500;
-    }
+  svg {
+    color: $gray-500;
+  }
 }
