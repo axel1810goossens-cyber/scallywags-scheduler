@@ -279,47 +279,85 @@
 .export-options {
   display: flex;
   flex-direction: column;
-  gap: $spacing-3;
+  gap: $spacing-4;
   margin-bottom: $spacing-6;
 }
 
-.export-option-button {
+.export-format-group {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: $radius-md;
   padding: $spacing-4;
-  cursor: pointer;
   transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: $spacing-4;
-  text-align: left;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: $primary-light;
-    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
   }
 
-  svg {
-    width: 24px;
-    height: 24px;
-    color: $primary-light;
-    flex-shrink: 0;
+  .format-header {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    margin-bottom: $spacing-2;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      color: $primary-light;
+      flex-shrink: 0;
+    }
   }
 
   .format-name {
-    display: block;
     font-size: $font-size-lg;
     font-weight: $font-weight-semibold;
     color: $white;
-    margin-bottom: $spacing-1;
   }
 
   .format-desc {
     display: block;
     font-size: $font-size-sm;
     color: $gray-400;
+    margin-bottom: $spacing-3;
+  }
+
+  .format-actions {
+    display: flex;
+    gap: $spacing-2;
+  }
+
+  .action-button {
+    flex: 1;
+    padding: $spacing-2 $spacing-3;
+    border-radius: $radius-md;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+
+    &.download {
+      background: $primary;
+      color: $white;
+
+      &:hover {
+        background: color-mix(in srgb, $primary 80%, black);
+        transform: translateY(-1px);
+      }
+    }
+
+    &.share {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: $white;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: $primary-light;
+        transform: translateY(-1px);
+      }
+    }
   }
 }
 

@@ -120,33 +120,136 @@ const WeeklyView = ({ currentDate }) => {
     setShowExportModal(true);
   };
 
-  const handleExport = async format => {
+  const handleExport = async (format, action = 'download') => {
     setShowExportModal(false);
     setExporting(true);
 
     try {
+      let file;
+      const filename = `schedule-week-${dateHelpers.formatDate(start, 'MMM-dd')}-${dateHelpers.formatDate(end, 'MMM-dd-yyyy')}`;
+
       switch (format) {
-        case 'jpeg':
-          await exportAsJPEG();
+        case 'jpeg': {
+          const dataUrl = await exportAsJPEG();
+          if (action === 'share') {
+            await shareFile(dataUrl, filename, 'image/jpeg', '.jpg');
+          } else {
+            downloadFile(dataUrl, `${filename}.jpg`);
+          }
           break;
-        case 'xlsx':
-          await exportAsXLSX();
+        }
+        case 'xlsx': {
+          file = await exportAsXLSX();
+          if (action === 'share') {
+            await shareFile(
+              file,
+              filename,
+              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+              '.xlsx'
+            );
+          } else {
+            downloadFile(file, `${filename}.xlsx`);
+          }
           break;
-        case 'pdf':
-          await exportAsPDF();
+        }
+        case 'pdf': {
+          file = await exportAsPDF();
+          if (action === 'share') {
+            await shareFile(file, filename, 'application/pdf', '.pdf');
+          } else {
+            downloadFile(file, `${filename}.pdf`);
+          }
           break;
+        }
         default:
           break;
       }
+
+      const actionText = action === 'share' ? 'shared' : 'downloaded';
       showModalMessage(
         'success',
         'Success',
-        `Schedule exported as ${format.toUpperCase()} successfully!`
+        `Schedule ${actionText} successfully!`
       );
     } catch {
       showModalMessage('error', 'Error', 'Failed to export schedule.');
     } finally {
       setExporting(false);
+    }
+  };
+
+  const downloadFile = (data, filename) => {
+    const link = document.createElement('a');
+    link.download = filename;
+
+    // Handle both data URLs and blobs
+    if (typeof data === 'string') {
+      link.href = data;
+    } else {
+      // eslint-disable-next-line no-undef
+      const url = URL.createObjectURL(data);
+      link.href = url;
+      link.onclick = () => {
+        // eslint-disable-next-line no-undef
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+      };
+    }
+
+    link.click();
+  };
+
+  const shareFile = async (data, filename, mimeType, extension) => {
+    // Check if Web Share API is supported
+    // eslint-disable-next-line no-undef
+    if (!navigator.share || !navigator.canShare) {
+      showModalMessage(
+        'warning',
+        'Share Not Available',
+        'Sharing is not supported on this device. The file will be downloaded instead.'
+      );
+      downloadFile(data, `${filename}${extension}`);
+      return;
+    }
+
+    try {
+      // Convert data URL or blob to File object
+      let blob;
+      if (typeof data === 'string' && data.startsWith('data:')) {
+        // Data URL (JPEG)
+        const response = await fetch(data);
+        blob = await response.blob();
+      } else {
+        // Already a blob or buffer
+        blob = data;
+      }
+
+      // eslint-disable-next-line no-undef
+      const file = new File([blob], `${filename}${extension}`, {
+        type: mimeType,
+      });
+
+      // Check if the file can be shared
+      // eslint-disable-next-line no-undef
+      if (!navigator.canShare({ files: [file] })) {
+        showModalMessage(
+          'warning',
+          'Share Not Available',
+          'This file type cannot be shared on your device. The file will be downloaded instead.'
+        );
+        downloadFile(data, `${filename}${extension}`);
+        return;
+      }
+
+      // Share the file
+      // eslint-disable-next-line no-undef
+      await navigator.share({
+        title: 'Weekly Schedule',
+        text: `Schedule for ${dateHelpers.formatDate(start, 'MMM dd')} - ${dateHelpers.formatDate(end, 'MMM dd, yyyy')}`,
+        files: [file],
+      });
+    } catch {
+      // User cancelled or sharing failed - just fail silently
+      downloadFile(data, `${filename}${extension}`);
     }
   };
 
@@ -161,6 +264,7 @@ const WeeklyView = ({ currentDate }) => {
       skipAutoScale: false,
       preferredFontFormat: 'woff2',
       cacheBust: true,
+      pixelPadding: { top: 24, right: 24, bottom: 24, left: 24 },
       filter: node => {
         // Skip external resources that might cause CORS issues
         if (node.tagName === 'LINK' && node.rel === 'stylesheet') {
@@ -173,10 +277,7 @@ const WeeklyView = ({ currentDate }) => {
       },
     });
 
-    const link = document.createElement('a');
-    link.download = `schedule-week-${dateHelpers.formatDate(start, 'MMM-dd')}-${dateHelpers.formatDate(end, 'MMM-dd-yyyy')}.jpg`;
-    link.href = dataUrl;
-    link.click();
+    return dataUrl;
   };
 
   const exportAsXLSX = async () => {
@@ -234,20 +335,13 @@ const WeeklyView = ({ currentDate }) => {
       worksheet.getColumn(i).width = 12; // Days
     }
 
-    // Generate and download file
+    // Generate and return blob
     const buffer = await workbook.xlsx.writeBuffer();
     // eslint-disable-next-line no-undef
     const blob = new Blob([buffer], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     });
-    // eslint-disable-next-line no-undef
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `schedule-week-${dateHelpers.formatDate(start, 'MMM-dd')}-${dateHelpers.formatDate(end, 'MMM-dd-yyyy')}.xlsx`;
-    link.click();
-    // eslint-disable-next-line no-undef
-    URL.revokeObjectURL(url);
+    return blob;
   };
 
   const exportAsPDF = async () => {
@@ -318,9 +412,9 @@ const WeeklyView = ({ currentDate }) => {
       },
     });
 
-    doc.save(
-      `schedule-week-${dateHelpers.formatDate(start, 'MMM-dd')}-${dateHelpers.formatDate(end, 'MMM-dd-yyyy')}.pdf`
-    );
+    // Return blob instead of saving
+    const pdfBlob = doc.output('blob');
+    return pdfBlob;
   };
 
   const closeModal = () => {
@@ -582,36 +676,77 @@ const WeeklyView = ({ currentDate }) => {
         >
           <div className="export-modal" onClick={e => e.stopPropagation()}>
             <h3>Export Weekly Schedule</h3>
-            <p>Choose your preferred format:</p>
+            <p>Choose your preferred format and action:</p>
             <div className="export-options">
-              <button
-                className="export-option-button"
-                onClick={() => handleExport('jpeg')}
-              >
-                <FiDownload />
-                <span className="format-name">JPEG Image</span>
+              <div className="export-format-group">
+                <div className="format-header">
+                  <FiDownload />
+                  <span className="format-name">JPEG Image</span>
+                </div>
                 <span className="format-desc">
                   Visual snapshot of the schedule
                 </span>
-              </button>
-              <button
-                className="export-option-button"
-                onClick={() => handleExport('xlsx')}
-              >
-                <FiDownload />
-                <span className="format-name">Excel (XLSX)</span>
+                <div className="format-actions">
+                  <button
+                    className="action-button download"
+                    onClick={() => handleExport('jpeg', 'download')}
+                  >
+                    Download
+                  </button>
+                  <button
+                    className="action-button share"
+                    onClick={() => handleExport('jpeg', 'share')}
+                  >
+                    Share
+                  </button>
+                </div>
+              </div>
+
+              <div className="export-format-group">
+                <div className="format-header">
+                  <FiDownload />
+                  <span className="format-name">Excel (XLSX)</span>
+                </div>
                 <span className="format-desc">
                   Spreadsheet format for editing
                 </span>
-              </button>
-              <button
-                className="export-option-button"
-                onClick={() => handleExport('pdf')}
-              >
-                <FiDownload />
-                <span className="format-name">PDF Document</span>
+                <div className="format-actions">
+                  <button
+                    className="action-button download"
+                    onClick={() => handleExport('xlsx', 'download')}
+                  >
+                    Download
+                  </button>
+                  <button
+                    className="action-button share"
+                    onClick={() => handleExport('xlsx', 'share')}
+                  >
+                    Share
+                  </button>
+                </div>
+              </div>
+
+              <div className="export-format-group">
+                <div className="format-header">
+                  <FiDownload />
+                  <span className="format-name">PDF Document</span>
+                </div>
                 <span className="format-desc">Print-ready format</span>
-              </button>
+                <div className="format-actions">
+                  <button
+                    className="action-button download"
+                    onClick={() => handleExport('pdf', 'download')}
+                  >
+                    Download
+                  </button>
+                  <button
+                    className="action-button share"
+                    onClick={() => handleExport('pdf', 'share')}
+                  >
+                    Share
+                  </button>
+                </div>
+              </div>
             </div>
             <button
               className="cancel-export-button"
