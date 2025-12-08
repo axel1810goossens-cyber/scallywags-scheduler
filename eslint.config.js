@@ -45,6 +45,8 @@ export default [
       'react/prop-types': 'warn',
       'no-unused-vars': 'warn',
       'react-refresh/only-export-components': 'warn',
+      'react-hooks/exhaustive-deps': 'warn',
+      'react-hooks/set-state-in-effect': 'warn', // Allow setState in effects for initialization
     },
     settings: {
       react: {

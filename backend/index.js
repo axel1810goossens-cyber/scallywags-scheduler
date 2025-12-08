@@ -13,7 +13,7 @@ const jwtSecret = defineSecret('JWT_SECRET');
 
 // Initialize Firebase Admin (no service account needed in Cloud Functions)
 if (!admin.apps.length) {
-    admin.initializeApp();
+  admin.initializeApp();
 }
 
 const app = express();
@@ -25,18 +25,18 @@ app.use(express.urlencoded({ extended: true }));
 
 // Request logging
 app.use((req, res, next) => {
-    console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
-    next();
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  next();
 });
 
 // Health check
 app.get('/health', (req, res) => {
-    res.json({
-        success: true,
-        message: 'Scallywags Scheduler API is running',
-        timestamp: new Date().toISOString(),
-        environment: 'Firebase Cloud Functions'
-    });
+  res.json({
+    success: true,
+    message: 'Scallywags Scheduler API is running',
+    timestamp: new Date().toISOString(),
+    environment: 'Firebase Cloud Functions',
+  });
 });
 
 // API Routes
@@ -47,22 +47,22 @@ app.use('/settings', settingsRoutes);
 
 // 404 handler
 app.use((req, res) => {
-    res.status(404).json({
-        success: false,
-        error: 'Endpoint not found'
-    });
+  res.status(404).json({
+    success: false,
+    error: 'Endpoint not found',
+  });
 });
 
 // Error handler
-app.use((err, req, res, next) => {
-    console.error('Server error:', err);
-    res.status(err.status || 500).json({
-        success: false,
-        error: err.message || 'Internal server error'
-    });
+app.use((err, req, res) => {
+  console.error('Server error:', err);
+  res.status(err.status || 500).json({
+    success: false,
+    error: err.message || 'Internal server error',
+  });
 });
 
 // Export the Express app as a Cloud Function with secrets
 export const api = functions
-    .runWith({ secrets: [jwtSecret] })
-    .https.onRequest(app);
+  .runWith({ secrets: [jwtSecret] })
+  .https.onRequest(app);
