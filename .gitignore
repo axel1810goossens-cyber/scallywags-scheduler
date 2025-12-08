@@ -40,3 +40,4 @@ backend/.env.local
 # ENVIRONMENT_CONFIG.md
 # FIREBASE_SETUP.md
 # LOCAL_STORAGE_SETUP.md
+.env
