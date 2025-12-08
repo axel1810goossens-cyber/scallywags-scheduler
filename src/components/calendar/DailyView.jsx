@@ -130,33 +130,35 @@ const DailyView = ({ currentDate }) => {
   return (
     <div className="daily-view">
       {coverage && coverage.status !== 'closed' && (
-        <div className={`coverage-banner ${coverage.status}`}>
+        <div className="coverage-banner-wrapper">
+          <div className={`coverage-banner ${coverage.status}`}>
+            <div className="status-icon">
+              {coverage.status === 'optimal' && <FiCheckCircle />}
+              {coverage.status === 'warning' && <FiAlertTriangle />}
+              {coverage.status === 'critical' && <FiXCircle />}
+            </div>
+            <div className="status-content">
+              <h4>
+                {coverage.status === 'optimal'
+                  ? 'Staffing Optimal'
+                  : coverage.status === 'warning'
+                    ? 'Coverage Warning'
+                    : 'Understaffed'}
+              </h4>
+              {coverage.issues.length > 0 && (
+                <ul className="issues-list">
+                  {coverage.issues.map((issue, idx) => (
+                    <li key={idx} className={issue.type}>
+                      {issue.message}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
           <button onClick={handleAddShift} className="add-shift-button">
             <FiPlus /> Add Shift
           </button>
-          <div className="status-icon">
-            {coverage.status === 'optimal' && <FiCheckCircle />}
-            {coverage.status === 'warning' && <FiAlertTriangle />}
-            {coverage.status === 'critical' && <FiXCircle />}
-          </div>
-          <div className="status-content">
-            <h4>
-              {coverage.status === 'optimal'
-                ? 'Staffing Optimal'
-                : coverage.status === 'warning'
-                  ? 'Coverage Warning'
-                  : 'Understaffed'}
-            </h4>
-            {coverage.issues.length > 0 && (
-              <ul className="issues-list">
-                {coverage.issues.map((issue, idx) => (
-                  <li key={idx} className={issue.type}>
-                    {issue.message}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
         </div>
       )}
 

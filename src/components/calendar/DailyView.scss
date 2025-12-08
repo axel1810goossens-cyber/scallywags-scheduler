@@ -7,19 +7,26 @@
   gap: $spacing-6;
 }
 
-.coverage-banner {
+.coverage-banner-wrapper {
+  display: flex;
+  gap: $spacing-3;
+  align-items: flex-start;
   margin-bottom: $spacing-4;
+
+  .add-shift-button {
+    @include button-primary;
+    flex-shrink: 0;
+  }
+}
+
+.coverage-banner {
+  flex: 1;
   padding: $spacing-3;
   border-radius: $radius-md;
   display: flex;
   gap: $spacing-3;
   align-items: flex-start;
   animation: fadeIn 0.3s ease;
-
-  .add-shift-button {
-    @include button-primary;
-    flex-shrink: 0;
-  }
 
   &.optimal {
     background: rgba($success, 0.1);
