@@ -1,4 +1,4 @@
-import functions from 'firebase-functions';
+import * as functions from 'firebase-functions';
 import { defineSecret } from 'firebase-functions/params';
 import express from 'express';
 import cors from 'cors';
