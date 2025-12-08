@@ -1,0 +1,27 @@
+# Dependencies
+node_modules
+backend/node_modules
+
+# Build outputs
+dist
+build
+.firebase
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Config files
+package-lock.json
+backend/package-lock.json
+
+# Firebase
+.firebaserc
+firebase-debug.log
+
+# Environment
+.env
+.env.local
+backend/.env
+backend/.env.local
