@@ -1,0 +1,66 @@
+name: Security Audit
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+    # Run weekly on Mondays at 9 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+        id: audit
+
+      - name: Run npm audit (production only)
+        run: npm audit --omit=dev --audit-level=high
+        id: audit_prod
+
+      - name: Check for critical vulnerabilities
+        if: failure()
+        run: |
+          echo "❌ Critical vulnerabilities found in production dependencies!"
+          echo "Run 'npm audit' locally and fix with 'npm audit fix'"
+          exit 1
+
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: npm ci
+
+      - name: Audit backend dependencies
+        working-directory: ./backend
+        run: npm audit --omit=dev --audit-level=high
+        id: audit_backend
+
+      - name: Post audit summary
+        if: always()
+        run: |
+          echo "## Security Audit Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Frontend Dependencies" >> $GITHUB_STEP_SUMMARY
+          npm audit --json | jq -r '.metadata | "- Total: \(.dependencies) packages\n- Vulnerabilities: \(.vulnerabilities.total)\n  - Info: \(.vulnerabilities.info)\n  - Low: \(.vulnerabilities.low)\n  - Moderate: \(.vulnerabilities.moderate)\n  - High: \(.vulnerabilities.high)\n  - Critical: \(.vulnerabilities.critical)"' >> $GITHUB_STEP_SUMMARY || echo "Unable to generate summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Backend Dependencies" >> $GITHUB_STEP_SUMMARY
+          cd backend && npm audit --json | jq -r '.metadata | "- Total: \(.dependencies) packages\n- Vulnerabilities: \(.vulnerabilities.total)\n  - Info: \(.vulnerabilities.info)\n  - Low: \(.vulnerabilities.low)\n  - Moderate: \(.vulnerabilities.moderate)\n  - High: \(.vulnerabilities.high)\n  - Critical: \(.vulnerabilities.critical)"' >> $GITHUB_STEP_SUMMARY || echo "Unable to generate summary" >> $GITHUB_STEP_SUMMARY

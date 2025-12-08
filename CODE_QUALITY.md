@@ -1,14 +1,22 @@
-# Code Quality Setup
+# Code Quality & Security Setup
 
-This project uses Husky, ESLint, and Prettier to maintain code quality and consistency.
+This project uses Husky, ESLint, Prettier, and npm audit to maintain code quality, consistency, and security.
 
 ## What's Configured
 
 ### 🪝 Husky Pre-commit Hooks
 
 - Automatically runs before every commit
+- Checks for high/critical security vulnerabilities
 - Uses `lint-staged` to check only staged files
 - Fixes issues automatically when possible
+
+### 🔒 Security Auditing
+
+- Runs `npm audit` before every commit
+- **Blocks commits** with high or critical vulnerabilities
+- Weekly automated security checks via GitHub Actions
+- Separate checks for frontend and backend dependencies
 
 ### ✨ Prettier (Code Formatting)
 
@@ -23,6 +31,22 @@ This project uses Husky, ESLint, and Prettier to maintain code quality and consi
 - Runs automatically on commit
 
 ## Available Scripts
+
+### Security Auditing
+
+```bash
+# Check for all vulnerabilities
+npm audit
+
+# Check for high/critical only
+npm audit --audit-level=high
+
+# Fix vulnerabilities automatically (use with caution)
+npm audit fix
+
+# Check production dependencies only
+npm audit --omit=dev
+```
 
 ### Linting
 
@@ -44,27 +68,114 @@ npm run format:check
 npm run format
 ```
 
-## How It Works
-
-### Pre-commit Hook
+## How Pre-commit Works
 
 When you run `git commit`, Husky automatically:
 
-1. **Runs ESLint** on staged `.js` and `.jsx` files
-2. **Runs Prettier** on staged `.js`, `.jsx`, `.json`, `.css`, `.scss`, `.md` files
-3. **Fixes issues automatically** when possible
-4. **Stops the commit** if there are errors that can't be auto-fixed
+### 1. 🔍 Security Check
 
-### What Gets Checked
+- Runs `npm audit --audit-level=high --omit=dev`
+- Checks for high/critical vulnerabilities in production dependencies
+- **Blocks commit** if vulnerabilities found
+- Shows how to fix the issues
 
-Configured in `package.json` under `lint-staged`:
+### 2. ✨ Code Quality Check
 
-```json
-{
-  "*.{js,jsx}": ["eslint --fix", "prettier --write"],
-  "*.{json,css,scss,md}": ["prettier --write"]
-}
+- Runs ESLint on staged `.js` and `.jsx` files
+- Runs Prettier on staged files
+- Fixes issues automatically when possible
+- Stops commit if there are unfixable errors
+
+### Example output:
+
+```bash
+🔍 Checking for high/critical security vulnerabilities...
+✅ No high/critical vulnerabilities found
+
+✔ Running tasks for staged files...
+✔ Applying modifications from tasks...
+✔ Cleaning up temporary files...
+[main abc1234] Your commit message
 ```
+
+## Security Audit Levels
+
+The pre-commit hook checks for:
+
+- **High severity** - Serious vulnerabilities
+- **Critical severity** - Immediate action required
+
+Other severities (info, low, moderate) won't block commits but should be addressed:
+
+```bash
+npm audit
+npm audit fix
+```
+
+## GitHub Actions - Weekly Security Scan
+
+`.github/workflows/security-audit.yml` runs:
+
+- **On push/PR** - Checks security on every change
+- **Weekly** - Scheduled Monday 9 AM UTC
+- **Manual** - Can trigger from Actions tab
+
+It checks:
+
+- Frontend dependencies (`npm audit`)
+- Backend dependencies (`backend/npm audit`)
+- Posts summary in workflow results
+
+## Handling Vulnerabilities
+
+### If commit is blocked:
+
+```bash
+❌ COMMIT BLOCKED: High or critical vulnerabilities found!
+Run 'npm audit' to see details and 'npm audit fix' to fix them.
+```
+
+**Steps to fix:**
+
+1. **See the details:**
+
+   ```bash
+   npm audit
+   ```
+
+2. **Try automatic fix:**
+
+   ```bash
+   npm audit fix
+   ```
+
+3. **If auto-fix doesn't work:**
+
+   ```bash
+   # See what can be fixed with breaking changes
+   npm audit fix --force
+
+   # Or update specific packages
+   npm update package-name
+   ```
+
+4. **Test your app** after fixing
+
+5. **Commit again:**
+   ```bash
+   git add package.json package-lock.json
+   git commit -m "fix: Update vulnerable dependencies"
+   ```
+
+### If you need to commit urgently:
+
+**Not recommended**, but you can skip the check:
+
+```bash
+git commit --no-verify -m "your message"
+```
+
+⚠️ **Remember to fix vulnerabilities ASAP!**
 
 ## ESLint Rules
 
@@ -91,47 +202,16 @@ Configuration in `.prettierrc`:
 }
 ```
 
-## Skipping Pre-commit Checks
+## What Gets Checked
 
-**Not recommended**, but if you need to skip checks:
+Configured in `package.json` under `lint-staged`:
 
-```bash
-git commit --no-verify -m "your message"
+```json
+{
+  "*.{js,jsx}": ["eslint --fix", "prettier --write"],
+  "*.{json,css,scss,md}": ["prettier --write"]
+}
 ```
-
-## Fixing Issues
-
-### If commit fails due to linting errors:
-
-1. **View the errors** - Husky will show what failed
-2. **Fix automatically** (if possible):
-   ```bash
-   npm run lint:fix
-   npm run format
-   ```
-3. **Fix manually** - Address remaining issues
-4. **Stage changes**:
-   ```bash
-   git add .
-   ```
-5. **Commit again**:
-   ```bash
-   git commit -m "your message"
-   ```
-
-### Common issues:
-
-**Unused variables:**
-
-- Remove them or prefix with `_` (e.g., `_unusedVar`)
-
-**Missing prop types:**
-
-- Add PropTypes validation or use TypeScript
-
-**Formatting issues:**
-
-- Run `npm run format` to auto-fix
 
 ## IDE Integration
 
@@ -163,9 +243,10 @@ Add to `.vscode/settings.json`:
 
 The GitHub Actions workflows also run these checks:
 
-- Linting runs on every PR and push
-- Build fails if there are linting errors
-- Ensures code quality before deployment
+- **Security audit** runs on every push/PR
+- **Linting** runs on every PR and push
+- **Weekly automated security scans**
+- Build fails if there are critical vulnerabilities or linting errors
 
 ## Troubleshooting
 
@@ -189,66 +270,101 @@ npm run lint:fix
 npm run lint
 ```
 
-### "Prettier formatting conflicts"
+### "High severity vulnerabilities found"
 
 ```bash
-# Format everything
-npm run format
+# See details
+npm audit
 
-# Stage changes
-git add .
+# Try to fix
+npm audit fix
 
-# Commit again
-git commit -m "your message"
+# If that doesn't work, update packages
+npm update
+
+# Check again
+npm audit --audit-level=high
 ```
 
-### Disable for specific files
+### "Cannot find module during audit"
 
-Add to `.eslintignore`:
-
-```
-dist/
-build/
-*.config.js
-```
-
-Add to `.prettierignore`:
-
-```
-dist/
-build/
-coverage/
+```bash
+# Reinstall dependencies
+rm -rf node_modules package-lock.json
+npm install
 ```
 
 ## Best Practices
 
-1. **Commit often** - Small commits are easier to fix
-2. **Run checks manually** before committing large changes:
+1. **Run audits regularly** - Don't wait for pre-commit hook
+
    ```bash
-   npm run lint
-   npm run format:check
+   npm audit
    ```
-3. **Install IDE extensions** for real-time feedback
-4. **Don't skip hooks** - They catch issues early
-5. **Fix warnings** - Don't let them accumulate
 
-## Updating Rules
+2. **Keep dependencies updated:**
 
-### Add new ESLint rules:
+   ```bash
+   npm outdated
+   npm update
+   ```
 
-Edit `eslint.config.js` → `rules` section
+3. **Check GitHub's Dependabot alerts** - Automatically created PRs
 
-### Change Prettier formatting:
+4. **Commit often** - Small commits are easier to fix
 
-Edit `.prettierrc`
+5. **Don't skip security checks** - They protect your users
 
-### Add files to lint-staged:
+6. **Test after updates** - Security fixes can introduce breaking changes
 
-Edit `package.json` → `lint-staged` section
+7. **Monitor weekly security reports** in GitHub Actions
 
-After changes, test with:
+## Monitoring Security
+
+### In GitHub:
+
+1. Go to **Security** tab
+2. Check **Dependabot alerts**
+3. Review **Actions** tab for weekly audit results
+
+### Locally:
 
 ```bash
-npm run lint
-npm run format:check
+# Quick security check
+npm audit --audit-level=high --omit=dev
+
+# Full report
+npm audit
+
+# Backend check
+cd backend && npm audit
 ```
+
+## Updating Configuration
+
+### Change audit sensitivity:
+
+Edit `.husky/pre-commit` - change `--audit-level=high` to:
+
+- `critical` - Only block critical vulnerabilities
+- `moderate` - Block moderate and above
+- `low` - Block everything (very strict)
+
+### Ignore specific vulnerabilities:
+
+Create `.npmrc` file:
+
+```
+audit-level=high
+```
+
+### Add more checks:
+
+Edit `.husky/pre-commit` to add custom validation
+
+## Resources
+
+- [npm audit docs](https://docs.npmjs.com/cli/v9/commands/npm-audit)
+- [GitHub Security advisories](https://github.com/advisories)
+- [ESLint rules](https://eslint.org/docs/rules/)
+- [Prettier options](https://prettier.io/docs/en/options.html)
