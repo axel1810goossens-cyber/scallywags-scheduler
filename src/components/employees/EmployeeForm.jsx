@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { FiX, FiSave, FiAlertCircle, FiPlus, FiTrash2 } from 'react-icons/fi';
 import { useEmployees } from '../../hooks/useEmployees';
 import { validators } from '../../utils/validators';
@@ -15,6 +15,7 @@ const DAYS_OF_WEEK = [
 ];
 
 const EmployeeForm = ({ employee, onClose }) => {
+    const initializedRef = useRef(false);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -29,7 +30,12 @@ const EmployeeForm = ({ employee, onClose }) => {
     const { addEmployee, updateEmployee } = useEmployees();
 
     useEffect(() => {
+        // Only initialize once to prevent resetting form when employee object reference changes due to polling
+        if (initializedRef.current) return;
+        
+        console.log('useEffect running - initializing form, employee:', employee);
         if (employee) {
+            console.log('Setting form data from employee:', employee);
             setFormData({
                 name: employee.name,
                 email: employee.email,
@@ -38,13 +44,21 @@ const EmployeeForm = ({ employee, onClose }) => {
                 availability: employee.availability || {}
             });
         } else {
-            // Initialize empty availability
+            // Initialize empty availability for new employee
             const initialAvailability = {};
             DAYS_OF_WEEK.forEach(day => {
                 initialAvailability[day.id] = [];
             });
-            setFormData(prev => ({ ...prev, availability: initialAvailability }));
+            console.log('Initializing empty form');
+            setFormData({
+                name: '',
+                email: '',
+                phone: '',
+                position: 'server',
+                availability: initialAvailability
+            });
         }
+        initializedRef.current = true;
     }, [employee]);
 
     const handleChange = (e) => {
@@ -65,13 +79,25 @@ const EmployeeForm = ({ employee, onClose }) => {
         });
     };
 
-    const addTimeSlot = (dayId) => {
+    const addTimeSlot = (dayId, event) => {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        
+        console.log('addTimeSlot called for:', dayId);
+        console.log('Current formData.availability:', formData.availability);
+        
         setFormData(prev => {
+            console.log('Previous state:', prev);
             const newAvailability = { ...prev.availability };
             const daySlots = [...(newAvailability[dayId] || [])];
 
             daySlots.push({ start: '09:00', end: '17:00' });
             newAvailability[dayId] = daySlots;
+            
+            console.log('New availability:', newAvailability);
+            console.log('New state:', { ...prev, availability: newAvailability });
 
             return { ...prev, availability: newAvailability };
         });
@@ -210,7 +236,7 @@ const EmployeeForm = ({ employee, onClose }) => {
                                         <span className="day-label">{day.label}</span>
                                         <button
                                             type="button"
-                                            onClick={() => addTimeSlot(day.id)}
+                                            onClick={(e) => addTimeSlot(day.id, e)}
                                             className="add-slot-btn"
                                             title="Add time slot"
                                         >

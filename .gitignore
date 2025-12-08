@@ -27,3 +27,16 @@ dist-ssr
 .firebase
 .firebaserc
 firebase-debug.log
+firebase-debug.*.log
+
+# Sensitive backend files
+backend/config/serviceAccountKey.json
+backend/.env
+backend/.env.local
+
+# Documentation (optional - uncomment to exclude)
+# FIREBASE_DEPLOYMENT.md
+# QUICK_START_FIREBASE.md
+# ENVIRONMENT_CONFIG.md
+# FIREBASE_SETUP.md
+# LOCAL_STORAGE_SETUP.md

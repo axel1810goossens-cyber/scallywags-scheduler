@@ -97,6 +97,10 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: $spacing-4;
+
+    &:not(:last-child) {
+        padding-bottom: $spacing-2;
+    }
 }
 
 .employee-search-container {
