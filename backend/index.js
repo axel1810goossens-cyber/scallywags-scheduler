@@ -1,4 +1,4 @@
-import * as functions from 'firebase-functions';
+import { onRequest } from 'firebase-functions/v2/https';
 import { defineSecret } from 'firebase-functions/params';
 import express from 'express';
 import cors from 'cors';
@@ -63,6 +63,4 @@ app.use((err, req, res) => {
 });
 
 // Export the Express app as a Cloud Function with secrets
-export const api = functions
-  .runWith({ secrets: [jwtSecret] })
-  .https.onRequest(app);
+export const api = onRequest({ secrets: [jwtSecret] }, app);
