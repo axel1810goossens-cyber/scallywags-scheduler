@@ -35,7 +35,7 @@ export const mockEmployees = [
   },
   {
     id: 'emp_7',
-    name: 'Daniel Martinez',
+    name: 'Daniel Martinelli',
     email: 'daniel.m@scallywags.com',
     phone: '+1 (555) 890-1234',
     position: 'Server',
