@@ -15,6 +15,12 @@ import { localStorageService } from './localStorageService';
 export const employeeService = {
   // Add new employee
   addEmployee: async employeeData => {
+    if (!db) {
+      return {
+        success: false,
+        error: 'Database not configured. Please login first.',
+      };
+    }
     try {
       const docRef = await addDoc(collection(db, 'employees'), {
         ...employeeData,
@@ -31,6 +37,12 @@ export const employeeService = {
 
   // Update employee
   updateEmployee: async (id, updates) => {
+    if (!db) {
+      return {
+        success: false,
+        error: 'Database not configured. Please login first.',
+      };
+    }
     try {
       const employeeRef = doc(db, 'employees', id);
       await updateDoc(employeeRef, {
@@ -48,6 +60,12 @@ export const employeeService = {
 
   // Delete employee
   deleteEmployee: async id => {
+    if (!db) {
+      return {
+        success: false,
+        error: 'Database not configured. Please login first.',
+      };
+    }
     try {
       await deleteDoc(doc(db, 'employees', id));
       // Invalidate cache on write
@@ -65,6 +83,13 @@ export const employeeService = {
     const cached = localStorageService.getCachedEmployees();
     if (cached) {
       return { success: true, data: cached };
+    }
+
+    if (!db) {
+      return {
+        success: false,
+        error: 'Database not configured. Please login first.',
+      };
     }
 
     try {
@@ -85,6 +110,11 @@ export const employeeService = {
 
   // Subscribe to employees list
   subscribeToEmployees: callback => {
+    if (!db) {
+      console.error('Database not configured');
+      callback([]);
+      return () => {};
+    }
     try {
       const q = query(collection(db, 'employees'), orderBy('name'));
       return onSnapshot(

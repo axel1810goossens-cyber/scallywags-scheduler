@@ -15,6 +15,7 @@ A comprehensive employee scheduling application for restaurant management, built
 ## Tech Stack
 
 ### Frontend
+
 - **React 18** - UI framework
 - **Vite** - Build tool and dev server
 - **Sass** - Styling with modern CSS features
@@ -23,6 +24,7 @@ A comprehensive employee scheduling application for restaurant management, built
 - **React Icons** - Icon library
 
 ### Backend
+
 - **Firebase Cloud Functions** - Serverless API
 - **Firestore** - NoSQL database
 - **Express.js** - API routing
@@ -70,12 +72,14 @@ scallywags-scheduler/
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/axel1810goossens-cyber/scallywags-scheduler.git
    cd scallywags-scheduler
    ```
 
 2. **Install dependencies**
+
    ```bash
    # Frontend dependencies
    npm install
@@ -89,29 +93,33 @@ scallywags-scheduler/
 3. **Firebase Setup**
 
    a. Create a Firebase project at [Firebase Console](https://console.firebase.google.com/)
-   
+
    b. Enable Firestore Database (test mode for development)
-   
+
    c. Download service account key:
-      - Go to Project Settings → Service Accounts
-      - Click "Generate New Private Key"
-      - Save as `backend/config/serviceAccountKey.json`
+   - Go to Project Settings → Service Accounts
+   - Click "Generate New Private Key"
+   - Save as `backend/config/serviceAccountKey.json`
 
    d. Update `.firebaserc` with your project ID:
-      ```json
-      {
-        "projects": {
-          "default": "your-project-id"
-        }
-      }
-      ```
+
+   ```json
+   {
+     "projects": {
+       "default": "your-project-id"
+     }
+   }
+   ```
 
    e. Update `src/config/api.js` with your Cloud Function URL:
-      ```javascript
-      const FIREBASE_FUNCTION_URL = 'https://us-central1-YOUR-PROJECT.cloudfunctions.net/api';
-      ```
+
+   ```javascript
+   const FIREBASE_FUNCTION_URL =
+     'https://us-central1-YOUR-PROJECT.cloudfunctions.net/api';
+   ```
 
 4. **Initialize Database**
+
    ```bash
    cd backend
    npm run init-db
@@ -143,13 +151,15 @@ Frontend will run on `http://localhost:5173` and connect to Firebase Cloud Funct
 ### Local Development (with Local Backend)
 
 1. Update `src/config/api.js`:
+
    ```javascript
-   const API_BASE_URL = isProduction 
-       ? FIREBASE_FUNCTION_URL
-       : 'http://localhost:3001/api'; // Local backend
+   const API_BASE_URL = isProduction
+     ? FIREBASE_FUNCTION_URL
+     : 'http://localhost:3001/api'; // Local backend
    ```
 
 2. Create `backend/.env.local`:
+
    ```env
    PORT=3001
    JWT_SECRET=your-secret-key
@@ -157,6 +167,7 @@ Frontend will run on `http://localhost:5173` and connect to Firebase Cloud Funct
    ```
 
 3. Run both servers:
+
    ```bash
    # Terminal 1 - Backend
    cd backend
@@ -171,16 +182,19 @@ Frontend will run on `http://localhost:5173` and connect to Firebase Cloud Funct
 ### Deploy to Firebase
 
 1. **Build frontend**
+
    ```bash
    npm run build
    ```
 
 2. **Deploy everything**
+
    ```bash
    firebase deploy
    ```
 
    Or deploy individually:
+
    ```bash
    firebase deploy --only functions    # Backend only
    firebase deploy --only hosting      # Frontend only
@@ -194,11 +208,13 @@ Frontend will run on `http://localhost:5173` and connect to Firebase Cloud Funct
 ## API Endpoints
 
 ### Authentication
+
 - `POST /api/auth/login` - Login with email/password
 - `GET /api/auth/me` - Get current user info
 - `POST /api/auth/refresh` - Refresh JWT token
 
 ### Employees
+
 - `GET /api/employees` - List all employees
 - `GET /api/employees/:id` - Get employee by ID
 - `POST /api/employees` - Create employee (admin only)
@@ -206,6 +222,7 @@ Frontend will run on `http://localhost:5173` and connect to Firebase Cloud Funct
 - `DELETE /api/employees/:id` - Delete employee (admin only)
 
 ### Shifts
+
 - `GET /api/shifts?date=YYYY-MM-DD` - Get shifts by date
 - `GET /api/shifts?startDate=X&endDate=Y` - Get shifts by range
 - `POST /api/shifts` - Create shift (admin only)
@@ -213,18 +230,34 @@ Frontend will run on `http://localhost:5173` and connect to Firebase Cloud Funct
 - `DELETE /api/shifts/:id` - Delete shift (admin only)
 
 ### Settings
+
 - `GET /api/settings` - Get app settings
 - `PUT /api/settings` - Update settings (admin only)
 
 ## Default Login
 
+### For Testing (Mock Mode)
+
+When Firebase is not configured or for quick testing:
+
+- **Email:** `admin@test.com`
+- **Password:** `admin`
+
+### For Production (Firebase Mode)
+
+After running `npm run init-db` in the backend:
+
 - **Email:** `admin@scallywags.com`
 - **Password:** `admin123` (change this after first login!)
+
+**Note:** The mock login only works on the device where you first logged in (stored in localStorage). For access from different devices, you must use Firebase authentication.
 
 ## Environment Variables
 
 ### Backend (for local development)
+
 Create `backend/.env.local`:
+
 ```env
 PORT=3001
 JWT_SECRET=your-secure-secret-key
@@ -232,7 +265,9 @@ FIREBASE_SERVICE_ACCOUNT_PATH=./config/serviceAccountKey.json
 ```
 
 ### Cloud Functions
+
 Set via Firebase CLI:
+
 ```bash
 firebase functions:secrets:set JWT_SECRET
 ```
@@ -257,6 +292,7 @@ firebase functions:secrets:set JWT_SECRET
 ## Firebase Free Tier Limits
 
 Perfect for development and small production:
+
 - 2M Cloud Function invocations/month
 - 50K Firestore reads/day
 - 20K Firestore writes/day
@@ -265,19 +301,47 @@ Perfect for development and small production:
 
 ## Troubleshooting
 
+### "Missing or insufficient permissions" errors
+
+This error occurs when trying to access Firestore without being authenticated. Solutions:
+
+1. **Make sure you're logged in**
+   - The app requires authentication to access data
+   - Use test credentials: `admin@test.com` / `admin` for mock mode
+   - Or use Firebase credentials after running `npm run init-db`
+
+2. **Different computer access issues**
+   - Mock login (`admin@test.com`) only works on the device where you first logged in
+   - For cross-device access, you need to:
+     - Set up Firebase with real authentication
+     - Run `npm run init-db` in the backend to create a Firebase user
+     - Login with `admin@scallywags.com` / `admin123`
+
+3. **Clear browser cache**
+   - Clear localStorage and cookies
+   - Try logging in again
+
+4. **Check Firestore rules**
+   - Ensure rules are deployed: `firebase deploy --only firestore`
+   - Rules require authentication for all operations
+
 ### "Permission denied" errors
+
 - Ensure you ran `npm run init-db` to create admin user
 - Check Firestore rules are deployed: `firebase deploy --only firestore`
 
 ### "Invalid token" errors
+
 - JWT_SECRET must be set in Cloud Functions
 - Token expires after 24 hours - login again
 
 ### Build errors
+
 - Clear node_modules: `rm -rf node_modules package-lock.json && npm install`
 - Check Node.js version: `node --version` (should be 18+)
 
 ### Cloud Function errors
+
 - Check logs: `firebase functions:log`
 - Ensure all secrets are set: `firebase functions:secrets:access JWT_SECRET`
 
@@ -296,6 +360,7 @@ This project is licensed under the ISC License.
 ## Support
 
 For issues and questions:
+
 - Check the [Firebase Documentation](https://firebase.google.com/docs)
 - Review [Cloud Functions Guide](https://firebase.google.com/docs/functions)
 - Check [Firestore Documentation](https://firebase.google.com/docs/firestore)

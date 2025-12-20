@@ -13,6 +13,8 @@ service cloud.firestore {
     }
     
     // Employees collection - authenticated users can read, only admins can write
+    // NOTE: Users must be logged in to access any data
+    // If you see "Missing or insufficient permissions", ensure you're logged in
     match /employees/{employeeId} {
       allow read: if isAuthenticated();
       allow create, update, delete: if isAdmin();

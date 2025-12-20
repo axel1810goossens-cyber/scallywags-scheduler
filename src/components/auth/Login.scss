@@ -170,4 +170,24 @@
     color: $gray-400;
     font-weight: $font-weight-medium;
   }
+
+  .login-hint {
+    margin-top: $spacing-4;
+    padding: $spacing-4;
+    background: rgba($primary, 0.1);
+    border: 1px solid rgba($primary, 0.2);
+    border-radius: $radius-md;
+
+    .hint-title {
+      font-weight: $font-weight-bold;
+      color: $primary-light;
+      margin-bottom: $spacing-2;
+    }
+
+    p {
+      font-size: $font-size-xs;
+      color: $gray-300;
+      margin: $spacing-1 0;
+    }
+  }
 }

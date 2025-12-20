@@ -17,6 +17,12 @@ const SHIFTS_COLLECTION = 'shifts';
 export const shiftService = {
   // Add new shift
   addShift: async shiftData => {
+    if (!db) {
+      return {
+        success: false,
+        error: 'Database not configured. Please login first.',
+      };
+    }
     try {
       const docRef = await addDoc(collection(db, SHIFTS_COLLECTION), {
         ...shiftData,
@@ -33,6 +39,12 @@ export const shiftService = {
 
   // Batch add multiple shifts
   batchAddShifts: async shiftsData => {
+    if (!db) {
+      return {
+        success: false,
+        error: 'Database not configured. Please login first.',
+      };
+    }
     try {
       const batch = writeBatch(db);
       shiftsData.forEach(shiftData => {
@@ -54,6 +66,12 @@ export const shiftService = {
 
   // Update shift
   updateShift: async (id, updates) => {
+    if (!db) {
+      return {
+        success: false,
+        error: 'Database not configured. Please login first.',
+      };
+    }
     try {
       const shiftRef = doc(db, SHIFTS_COLLECTION, id);
       await updateDoc(shiftRef, {
@@ -71,6 +89,12 @@ export const shiftService = {
 
   // Delete shift
   deleteShift: async id => {
+    if (!db) {
+      return {
+        success: false,
+        error: 'Database not configured. Please login first.',
+      };
+    }
     try {
       await deleteDoc(doc(db, SHIFTS_COLLECTION, id));
       // Invalidate cache on write
@@ -84,6 +108,11 @@ export const shiftService = {
 
   // Subscribe to shifts within date range
   subscribeToShifts: (startDate, endDate, callback) => {
+    if (!db) {
+      console.error('Database not configured');
+      callback([]);
+      return () => {};
+    }
     try {
       // Convert dates to YYYY-MM-DD format for string comparison
       const startDateStr =
@@ -124,6 +153,12 @@ export const shiftService = {
 
   // Swap shifts
   swapShifts: async (shiftId1, shiftId2, employee1, employee2) => {
+    if (!db) {
+      return {
+        success: false,
+        error: 'Database not configured. Please login first.',
+      };
+    }
     try {
       const batch = writeBatch(db);
 

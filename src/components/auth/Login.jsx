@@ -90,6 +90,11 @@ const Login = () => {
 
           <div className="login-footer">
             <p>Manager Access Only</p>
+            <div className="login-hint">
+              <p className="hint-title">Test Credentials:</p>
+              <p>Email: admin@test.com</p>
+              <p>Password: admin</p>
+            </div>
           </div>
         </div>
       </div>

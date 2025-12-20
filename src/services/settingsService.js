@@ -30,6 +30,13 @@ export const settingsService = {
       return { success: true, data: { ...defaultSettings, ...cached } };
     }
 
+    if (!db) {
+      return {
+        success: false,
+        error: 'Database not configured. Please login first.',
+      };
+    }
+
     try {
       const docRef = doc(db, 'settings', 'general');
       const docSnap = await getDoc(docRef);
@@ -52,6 +59,12 @@ export const settingsService = {
   },
 
   updateSettings: async newSettings => {
+    if (!db) {
+      return {
+        success: false,
+        error: 'Database not configured. Please login first.',
+      };
+    }
     try {
       const docRef = doc(db, 'settings', 'general');
       await updateDoc(docRef, newSettings);
